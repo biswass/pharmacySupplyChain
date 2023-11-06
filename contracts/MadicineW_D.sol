@@ -3,9 +3,7 @@ pragma solidity >=0.4.25 <0.6.0;
 import './Madicine.sol';
 
 /********************************************** MadicineW_D ******************************************/
-/// @title MadicineW_D
-/// @notice
-/// @dev Sub Contract for Madicine Transaction between Wholesaler and Distributer
+
 contract MadicineW_D {
     /// @notice
     address Owner;

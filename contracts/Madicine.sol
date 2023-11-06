@@ -1,9 +1,7 @@
 pragma solidity >=0.4.25 <0.6.0;
 
 /********************************************** Madicine ******************************************/
-/// @title Madicine
-/// @notice
-/// @dev
+
 contract Madicine {
 
     /// @notice

@@ -23,9 +23,9 @@
  */
 
 const HDWalletProvider = require('truffle-hdwallet-provider');
-// const infuraKey = "fj4jll3k.....";
-//
-// const fs = require('fs');
+const infuraKey = "02b787ae4676470baac9ea2288b785d5";
+
+const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
 
 module.exports = {
@@ -48,23 +48,38 @@ module.exports = {
     //
     development: 
 		{
-	   		host: "localhost",
-	   		port: 8545,
-        gas: 8000000,
-        gasPrice: 60000000000,
-	   		network_id: '5777' // Match any network id
+	   		host: "127.0.0.1",
+	   		port: 7545,
+        // gas: 8000000,
+        // gasPrice: 60000000000,
+	   		// network_id: '5777' // Match any network id
+        network_id: "5777" // Match any network id
 
 		},
-    ropsten: {
-    	  provider: function() {
-		    var mnemonic = "letter casino spread lawn water toward extend public gasp turn wave bone";//put ETH wallet 12 mnemonic code	
-		    return new HDWalletProvider(mnemonic, "https://ropsten.infura.io/v3/8cf80ccb22dd4231b0b609cad3f58383");
-		  },
-      gas: 8000000,
-      gasPrice: 60000000000,
-		  network_id: '3'
-		  // from: '0xab0874cb61d.....',/*ETH wallet 12 mnemonic code wallet address*/
-		}  
+    // ropsten: {
+    // 	  provider: function() {
+		//     var mnemonic = "target gown leg blanket shrimp weasel misery wear sense dial quarter mind";//put ETH wallet 12 mnemonic code	
+		//     // return new HDWalletProvider(mnemonic, "https://ropsten.infura.io/v3/8cf80ccb22dd4231b0b609cad3f58383");
+    //     return new HDWalletProvider(mnemonic, "https://ropsten.infura.io/v3/"+infuraKey);
+		//   },
+    //   gas: 8000000,
+    //   gasPrice: 60000000000,
+		//   network_id: 3,
+    //   confirmations: 2,
+    //   timeoutBlocks: 200,
+    //   skipDryRun: true,
+    //   networkCheckTimeout: 60000
+		//   // from: '0xab0874cb61d.....',/*ETH wallet 12 mnemonic code wallet address*/
+		// }  
+    sepolia: {
+      provider: function() {
+        var mnemonic = "target gown leg blanket shrimp weasel misery wear sense dial quarter mind"; 
+        return new HDWalletProvider(mnemonic, "https://sepolia.infura.io/v3/"+infuraKey, 1);
+      },
+      gas: 8000000, 
+      gasPrice: 60000000000, 
+      network_id: '11155111', 
+    },
 
     // Another network with more advanced options...
     // advanced: {
@@ -115,3 +130,4 @@ module.exports = {
     }
   }
 }
+

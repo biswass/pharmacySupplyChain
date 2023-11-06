@@ -1,9 +1,7 @@
 pragma solidity >=0.4.25 <0.6.0;
 
 /********************************************** RawMatrials ******************************************/
-/// @title RawMatrials
-/// @notice
-/// @dev Create new instance of RawMatrials package
+
 contract RawMatrials {
     /// @notice
     address Owner;
