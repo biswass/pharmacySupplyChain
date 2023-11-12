@@ -1,12 +1,17 @@
-pragma solidity >=0.4.25 <0.6.0;
+pragma solidity >=0.4.25 <0.9.0;
 
 import './RawMatrials.sol';
 import './Madicine.sol';
 import './MadicineW_D.sol';
 import './MadicineD_P.sol';
+import './MadicineP_C.sol';
+import './Library.sol';
 
 
 contract SupplyChain {
+
+    using MyLibrary for MyLibrary.madicineStatus;
+    using MyLibrary for MyLibrary.medicineBasicInfo;
 
     /// @notice
     address public Owner;
@@ -34,6 +39,7 @@ contract SupplyChain {
         wholesaler,
         distributer,
         pharma,
+        customer,
         revoke
     }
 
@@ -69,7 +75,7 @@ contract SupplyChain {
     function revokeRole(address userAddress) public onlyOwner {
         require(UsersDetails[userAddress].role != roles.norole, "User not registered");
         emit UserRoleRevoked(userAddress, UsersDetails[userAddress].name,uint(UsersDetails[userAddress].role));
-        UsersDetails[userAddress].role = roles(7);
+        UsersDetails[userAddress].role = roles(8);
     }
     /// @notice
     /// @dev Reassigne new role to User
@@ -97,7 +103,10 @@ contract SupplyChain {
     /// @notice
     /// @dev Get User Information/ Profile
     /// @param User User Ethereum Network Address
-    /// @return User Details
+    /// @return name  Details
+    /// @return location  Details
+    /// @return ethAddress  Details
+    /// @return role  Details
     function getUserInfo(address User) public view returns(
         bytes32 name,
         bytes32 location,
@@ -113,7 +122,7 @@ contract SupplyChain {
 
     /// @notice
     /// @dev Get Number of registered Users
-    /// @return Number of registered Users
+    /// @return count of registered Users
     function getUsersCount() public view returns(uint count){
         return users.length;
     }
@@ -121,7 +130,10 @@ contract SupplyChain {
     /// @notice
     /// @dev Get User by Index value of stored data
     /// @param index Indexed Number
-    /// @return User Details
+    /// @return name Details
+    /// @return location Details
+    /// @return ethAddress Details
+    /// @return role Details
     function getUserbyIndex(uint index) public view returns(
         bytes32 name,
         bytes32 location,
@@ -171,7 +183,7 @@ contract SupplyChain {
 
     /// @notice
     /// @dev  Get Count of created package by supplier(caller)
-    /// @return Number of packages
+    /// @return count of packages
     function getPackagesCountS() public view returns (uint count){
         require(
             UsersDetails[msg.sender].role == roles.supplier,
@@ -183,7 +195,7 @@ contract SupplyChain {
     /// @notice
     /// @dev Get PackageID by Indexed value of stored data
     /// @param index Indexed Value
-    /// @return PackageID
+    /// @return packageID
     function getPackageIdByIndexS(uint index) public view returns(address packageID) {
         require(
             UsersDetails[msg.sender].role == roles.supplier,
@@ -221,6 +233,8 @@ contract SupplyChain {
             MadicineW_D(cid).pickWD(pid,msg.sender);
         } else if(transportertype == 4) {   // Distrubuter to Pharma
             MadicineD_P(cid).pickDP(pid,msg.sender);
+        } else if(transportertype == 5) {   // Pharma to Customer
+            MadicineP_C(cid).pickPC(pid,msg.sender);
         }
     }
 
@@ -245,7 +259,7 @@ contract SupplyChain {
 
     /// @notice
     /// @dev Get Package Count at Manufacturer
-    /// @return Number of Packages at Manufacturer
+    /// @return count of Packages at Manufacturer
     function getPackagesCountM() public view returns(uint count){
         require(
             UsersDetails[msg.sender].role == roles.manufacturer,
@@ -257,7 +271,7 @@ contract SupplyChain {
     /// @notice
     /// @dev Get PackageID by Indexed value of stored data
     /// @param index Indexed Value
-    /// @return PackageID
+    /// @return BatchID
     function getPackageIDByIndexM(uint index) public view returns(address BatchID){
         require(
             UsersDetails[msg.sender].role == roles.manufacturer,
@@ -284,7 +298,7 @@ contract SupplyChain {
     /// @param Rcvr Receiver Ethereum Network Address
     /// @param RcvrType Receiver Type Ethier Wholesaler(1) or Distributer(2)
     function manufacturMadicine(
-        bytes32 Des,
+        bytes32 Des, 
         bytes32 RM,
         uint Quant,
         address Shpr,
@@ -307,7 +321,8 @@ contract SupplyChain {
             Quant,
             Shpr,
             Rcvr,
-            RcvrType
+            RcvrType,
+            UsersDetails[msg.sender].location
         );
 
         ManufactureredMadicineBatches[msg.sender].push(address(m));
@@ -316,7 +331,7 @@ contract SupplyChain {
 
     /// @notice
     /// @dev Get Madicine Batch Count
-    /// @return Number of Batches
+    /// @return count of Batches
     function getBatchesCountM() public view returns (uint count){
         require(
             UsersDetails[msg.sender].role == roles.manufacturer,
@@ -328,7 +343,7 @@ contract SupplyChain {
     /// @notice
     /// @dev Get Madicine BatchID by indexed value of stored data
     /// @param index Indexed Number
-    /// @return Madicine BatchID
+    /// @return packageID Madicine BatchID
     function getBatchIdByIndexM(uint index) public view returns(address packageID) {
         require(
             UsersDetails[msg.sender].role == roles.manufacturer,
@@ -359,7 +374,7 @@ contract SupplyChain {
         if(rtype == 1){
             MadicineBatchesAtWholesaler[msg.sender].push(batchid);
         }else if( rtype == 2){
-            MadicineBatchesAtWholesaler[msg.sender].push(batchid);
+            MadicineBatchAtDistributer[msg.sender].push(batchid);
             if(Madicine(batchid).getWDP()[0] != address(0)){
                 MadicineW_D(cid).recieveWD(batchid,msg.sender);
             }
@@ -398,7 +413,7 @@ contract SupplyChain {
 
     /// @notice
     /// @dev Get Madicine Batch Count
-    /// @return Number of Batches
+    /// @return count of Batches
     function getBatchesCountWD() public view returns (uint count){
         require(
             UsersDetails[msg.sender].role == roles.wholesaler,
@@ -410,7 +425,7 @@ contract SupplyChain {
     /// @notice
     /// @dev Get Madicine BatchID by indexed value of stored data
     /// @param index Indexed Number
-    /// @return Madicine BatchID
+    /// @return packageID Madicine BatchID
     function getBatchIdByIndexWD(uint index) public view returns(address packageID) {
         require(
             UsersDetails[msg.sender].role == roles.wholesaler,
@@ -422,13 +437,37 @@ contract SupplyChain {
     /// @notice
     /// @dev Get Sub Contract ID of Madicine Batch Transfer in between Wholesaler to Distributer
     /// @param BatchID Madicine BatchID
-    /// @return SubContract ID
+    /// @return SubContractWD ID
     function getSubContractWD(address BatchID) public view returns (address SubContractWD) {
         // require(
         //     UsersDetails[msg.sender].role == roles.wholesaler,
         //     "Only Wholesaler Can call this function."
         // );
         return MadicineWtoDTxContract[BatchID];
+    }
+
+    
+    /// @notice
+    /// @dev Get Madicine Batch Count
+    /// @return count of Batches
+    function getBatchesCountW() public view returns (uint count){
+        require(
+            UsersDetails[msg.sender].role == roles.wholesaler,
+            "Only Wholesaler Can call this function."
+        );
+        return MadicineBatchesAtWholesaler[msg.sender].length;
+    }
+
+    /// @notice
+    /// @dev Get Madicine BatchID by indexed value of stored data
+    /// @param index Indexed Number
+    /// @return packageID Madicine BatchID
+    function getBatchIdByIndexW(uint index) public view returns(address packageID) {
+        require(
+            UsersDetails[msg.sender].role == roles.wholesaler,
+            "Only Wholesaler Can call this function."
+        );
+        return MadicineBatchesAtWholesaler[msg.sender][index];
     }
 
 /********************************************** Distributer Section ******************************************/
@@ -468,19 +507,19 @@ contract SupplyChain {
 
     /// @notice
     /// @dev Get Madicine BatchID Count
-    /// @return Number of Batches
+    /// @return count Number of Batches
     function getBatchesCountDP() public view returns (uint count){
         require(
             UsersDetails[msg.sender].role == roles.distributer,
             "Only Distributer Can call this function."
         );
-        return MadicineDtoP[msg.sender].length;
+        MadicineDtoP[msg.sender].length;
     }
 
     /// @notice
     /// @dev Get Madicine BatchID by indexed value of stored data
     /// @param index Index Number
-    /// @return Madicine BatchID
+    /// @return packageID Madicine BatchID
     function getBatchIdByIndexDP(uint index) public view returns(address packageID) {
         require(
             UsersDetails[msg.sender].role == roles.distributer,
@@ -492,7 +531,7 @@ contract SupplyChain {
     /// @notice
     /// @dev Get SubContract ID of Madicine Batch Transfer in between Distributer to Pharma
     /// @param BatchID Madicine BatchID
-    /// @return SubContract ID
+    /// @return SubContractDP ID
     function getSubContractDP(address BatchID) public view returns (address SubContractDP) {
         // require(
         //     UsersDetails[msg.sender].role == roles.distributer,
@@ -501,9 +540,39 @@ contract SupplyChain {
         return MadicineDtoPTxContract[BatchID];
     }
 
+    /// @notice
+    /// @dev Get Madicine Batch Count
+    /// @return count of Batches
+    function getBatchesCountD() public view returns (uint count){
+        require(
+            UsersDetails[msg.sender].role == roles.distributer,
+            "Only Distributer can call this function."
+        );
+        return MadicineBatchAtDistributer[msg.sender].length;
+    }
+
+    /// @notice
+    /// @dev Get Madicine BatchID by indexed value of stored data
+    /// @param index Indexed Number
+    /// @return packageID Madicine BatchID
+    function getBatchIdByIndexD(uint index) public view returns(address packageID) {
+        require(
+            UsersDetails[msg.sender].role == roles.distributer,
+            "Only Distributer can call this function."
+        );
+        return MadicineBatchAtDistributer[msg.sender][index];
+    }
+
 /********************************************** Pharma Section ******************************************/
     /// @notice
     mapping(address => address[]) MadicineBatchAtPharma;
+    
+    /// @notice
+    mapping(address => address[]) MadicinePtoC;
+
+    /// @notice
+    mapping(address => address) MadicinePtoCTxContract;
+
 
     /// @notice
     /// @dev Madicine Batch Recieved
@@ -520,6 +589,32 @@ contract SupplyChain {
         MadicineD_P(cid).recieveDP(batchid, msg.sender);
         MadicineBatchAtPharma[msg.sender].push(batchid);
         sale[batchid] = salestatus(1);
+    }
+
+    /// @notice
+    /// @dev Transfer Madicine BatchID in between Pharma to Customer
+    /// @param BatchID Madicine BatchID
+    /// @param Shipper Transporter Ethereum Network Address
+    /// @param Receiver Customer Ethereum Network Address
+    function transferMadicinePtoC(
+        address BatchID,
+        address Shipper,
+        address Receiver
+    ) public {
+        require(
+            UsersDetails[msg.sender].role == roles.pharma &&
+            msg.sender == Madicine(BatchID).getWDP()[2],
+            "Only Pharma or current owner of package can call this function"
+        );
+        MadicineP_C pc = new MadicineP_C(
+            BatchID,
+            msg.sender,
+            Shipper,
+            Receiver
+        );
+        MadicinePtoC[msg.sender].push(address(pc));
+        MadicinePtoCTxContract[BatchID] = address(pc);
+        updateSaleStatus(BatchID, 2);
     }
 
     enum salestatus {
@@ -572,13 +667,49 @@ contract SupplyChain {
         return uint(sale[BatchID]);
     }
 
+
+    /// @notice
+    /// @dev Get Madicine BatchID Count
+    /// @return count Number of Batches
+    function getBatchesCountPC() public view returns (uint count){
+        require(
+            UsersDetails[msg.sender].role == roles.pharma,
+            "Only Pharma can call this function."
+        );
+        MadicinePtoC[msg.sender].length;
+    }
+
+    /// @notice
+    /// @dev Get Madicine BatchID by indexed value of stored data
+    /// @param index Index Number
+    /// @return packageID Madicine BatchID
+    function getBatchIdByIndexPC(uint index) public view returns(address packageID) {
+        require(
+            UsersDetails[msg.sender].role == roles.pharma,
+            "Only Pharma can call this function."
+        );
+        return MadicinePtoC[msg.sender][index];
+    }
+
+    /// @notice
+    /// @dev Get SubContract ID of Madicine Batch Transfer in between Pharma to Customer
+    /// @param BatchID Madicine BatchID
+    /// @return SubContractPC ID
+    function getSubContractPC(address BatchID) public view returns (address SubContractPC) {
+        // require(
+        //     UsersDetails[msg.sender].role == roles.pharma,
+        //     "Only Pharma can call this function."
+        // );
+        return MadicinePtoCTxContract[BatchID];
+    }
+
     /// @notice
     /// @dev Get Madicine Batch count
-    /// @return Number of Batches
+    /// @return count of Batches
     function getBatchesCountP() public view returns(uint count){
         require(
             UsersDetails[msg.sender].role == roles.pharma,
-            "Only Wholesaler or current owner of package can call this function"
+            "Only Pharma or current owner of package can call this function"
         );
         return  MadicineBatchAtPharma[msg.sender].length;
     }
@@ -586,12 +717,49 @@ contract SupplyChain {
     /// @notice
     /// @dev Get Madicine BatchID by indexed value of stored data
     /// @param index Index Number
-    /// @return Madicine BatchID
+    /// @return BatchID
     function getBatchIdByIndexP(uint index) public view returns(address BatchID){
         require(
             UsersDetails[msg.sender].role == roles.pharma,
-            "Only Wholesaler or current owner of package can call this function"
+            "Only Pharma or current owner of package can call this function"
         );
         return MadicineBatchAtPharma[msg.sender][index];
     }
+
+/********************************************** Customer Section ******************************************/
+
+
+    /// @notice
+    /// @dev Madicine Batch Recieved
+    /// @param batchid Madicine BatchID
+    /// @param cid SubContract ID
+    function madicineRecievedByCustomer(
+        address batchid,
+        address cid
+    ) public {
+        require(
+            UsersDetails[msg.sender].role == roles.customer,
+            "Only Customer can call this function."
+        );
+        MadicineP_C(cid).recievePC(batchid, msg.sender);
+    }
+
+
+/********************************************** For Everyone ******************************************/
+
+
+    // function getMedicineBatchInfo(address batchid) public view returns(
+    //     MyLibrary.medicineBasicInfo memory BasicInfo,
+    //     bytes32 WholesalerLocation,
+    //     bytes32 DistributerLocation,
+    //     bytes32 PharmaLocation
+    // ){
+    //     (MyLibrary.medicineBasicInfo memory basic_info,
+    //     address whlslr, address dstri, address phrm) = Madicine(batchid).getMadicineInfo();
+        
+    //     return (
+    //         basic_info, 
+    //         UsersDetails[whlslr].location, UsersDetails[dstri].location, UsersDetails[phrm].location
+    //     );
+    // }
 }

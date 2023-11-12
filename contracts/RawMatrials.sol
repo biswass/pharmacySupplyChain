@@ -1,4 +1,4 @@
-pragma solidity >=0.4.25 <0.6.0;
+pragma solidity >=0.4.25 <0.9.0;
 
 /********************************************** RawMatrials ******************************************/
 
@@ -67,7 +67,13 @@ contract RawMatrials {
 
     /// @notice
     /// @dev Get RawMatrials Package Details
-    /// @return Package Details
+    /// @return Des Details
+    /// @return FN Details
+    /// @return Loc Details
+    /// @return Quant Details
+    /// @return Shpr Details
+    /// @return Rcvr Details
+    /// @return Splr Details
     function getSuppliedRawMatrials () public view returns(
         bytes32 Des,
         bytes32 FN,

@@ -1,23 +1,18 @@
-pragma solidity >=0.4.25 <0.6.0;
+pragma solidity >=0.4.25 <0.9.0;
 
+import './Library.sol';
 /********************************************** Madicine ******************************************/
 
 contract Madicine {
 
+    using MyLibrary for MyLibrary.madicineStatus;
+    using MyLibrary for MyLibrary.medicineBasicInfo;
+
     /// @notice
     address Owner;
 
-    enum madicineStatus {
-        atcreator,
-        picked4W,
-        picked4D,
-        deliveredatW,
-        deliveredatD,
-        picked4P,
-        deliveredatP
-    }
-
     // address batchid;
+    /// @notice
     bytes32 description;
     /// @notice
     bytes32 rawmatriales;
@@ -34,7 +29,13 @@ contract Madicine {
     /// @notice
     address pharma;
     /// @notice
-    madicineStatus status;
+    address customer;
+    /// @notice
+    MyLibrary.madicineStatus status;
+
+    uint manufacturing_time;
+    uint quality_check_time;
+    bytes32 manufacturing_location;
 
     event ShippmentUpdate(
         address indexed BatchID,
@@ -60,7 +61,8 @@ contract Madicine {
         uint Quant,
         address Shpr,
         address Rcvr,
-        uint RcvrType
+        uint RcvrType,
+        bytes32 manu_loc
     ) public {
         Owner = Manu;
         manufacturer = Manu;
@@ -68,6 +70,9 @@ contract Madicine {
         rawmatriales = RM;
         quantity = Quant;
         shipper = Shpr;
+        manufacturing_location = manu_loc;
+        manufacturing_time = block.timestamp;
+        quality_check_time = block.timestamp;
         if(RcvrType == 1) {
             wholesaler = Rcvr;
         } else if( RcvrType == 2){
@@ -77,31 +82,35 @@ contract Madicine {
 
     /// @notice
     /// @dev Get Madicine Batch basic Details
-    /// @return Madicine Batch Details
-    function getMadicineInfo () public view returns(
-        address Manu,
-        bytes32 Des,
-        bytes32 RM,
-        uint Quant,
-        address Shpr
-    ) {
-        return(
-            manufacturer,
-            description,
-            rawmatriales,
-            quantity,
-            shipper
-        );
-    }
+    /// @return Description Details
+    /// @return RawMaterials Details
+    /// @return Wholesaler Details
+    /// @return Distributer Details
+    /// @return Pharma Details
+    /// @return Status Details
+    /// @return ManufacturingTime Details
+    /// @return QualityCheckTime Details
+    /// @return ManufacturingLocation Details
+    // function getMadicineInfo () public view returns(
+    //     MyLibrary.medicineBasicInfo memory BasicInfo,
+    //     address Wholesaler,
+    //     address Distributer,
+    //     address Pharma
+    // ) {
+    //     return(
+    //         MyLibrary.medicineBasicInfo(description, rawmatriales, manufacturing_time, manufacturing_location, 
+    //         quality_check_time, status), wholesaler, distributer, pharma
+    //     );
+    // }
 
     /// @notice
     /// @dev Get address Wholesaler, Distributer and Pharma
-    /// @return Address Array
+    /// @return WDP Address Array
     function getWDP() public view returns(
-        address[3] memory WDP
+        address[4] memory WDP
     ) {
         return (
-            [wholesaler,distributer,pharma]
+            [wholesaler, distributer, pharma, customer]
         );
     }
 
@@ -125,15 +134,15 @@ contract Madicine {
             "Only Associate Shipper can call this function"
         );
         require(
-            status == madicineStatus(0),
+            status == MyLibrary.madicineStatus(0),
             "Package must be at Supplier."
         );
 
         if(wholesaler!=address(0x0)){
-            status = madicineStatus(1);
+            status = MyLibrary.madicineStatus(1);
             emit ShippmentUpdate(address(this),shipper,wholesaler,1,1);
         }else{
-            status = madicineStatus(2);
+            status = MyLibrary.madicineStatus(2);
             emit ShippmentUpdate(address(this),shipper,distributer,1,1);
         }
     }
@@ -157,12 +166,12 @@ contract Madicine {
             "Product not picked up yet"
         );
 
-        if(Rcvr == wholesaler && status == madicineStatus(1)){
-            status = madicineStatus(3);
+        if(Rcvr == wholesaler && status == MyLibrary.madicineStatus(1)){
+            status = MyLibrary.madicineStatus(3);
             emit ShippmentUpdate(address(this),shipper,wholesaler,2,3);
             return 1;
-        } else if(Rcvr == distributer && status == madicineStatus(2)){
-            status = madicineStatus(4);
+        } else if(Rcvr == distributer && status == MyLibrary.madicineStatus(2)){
+            status = MyLibrary.madicineStatus(4);
             emit ShippmentUpdate(address(this),shipper,distributer,3,4);
             return 2;
         }
@@ -181,7 +190,7 @@ contract Madicine {
             "this Wholesaler is not Associated."
         );
         distributer = receiver;
-        status = madicineStatus(2);
+        status = MyLibrary.madicineStatus(2);
     }
 
     /// @notice
@@ -194,7 +203,7 @@ contract Madicine {
             distributer == receiver,
             "This Distributer is not Associated."
         );
-        status = madicineStatus(4);
+        status = MyLibrary.madicineStatus(4);
     }
 
     /// @notice
@@ -210,7 +219,7 @@ contract Madicine {
             "this Distributer is not Associated."
         );
         pharma = receiver;
-        status = madicineStatus(5);
+        status = MyLibrary.madicineStatus(5);
     }
 
     /// @notice
@@ -223,6 +232,36 @@ contract Madicine {
             pharma == receiver,
             "This Pharma is not Associated."
         );
-        status = madicineStatus(6);
+        status = MyLibrary.madicineStatus(6);
+    }
+
+
+    /// @notice
+    /// @dev Update Madicine Batch transaction Status(Pick) in between Pharma and Customer
+    /// @param receiver Customer Ethereum Network Address
+    /// @param sender Pharma Ethereum Network Address
+    function sendPC(
+        address receiver,
+        address sender
+    ) public {
+        require(
+            pharma == sender,
+            "this Pharma is not Associated."
+        );
+        customer = receiver;
+        status = MyLibrary.madicineStatus(7);
+    }
+
+    /// @notice
+    /// @dev Update Madicine Batch transaction Status(Recieved) in between Pharma and Customer
+    /// @param receiver Customer Ethereum Network Address
+    function recievedPC(
+        address receiver
+    ) public {
+        require(
+            customer == receiver,
+            "This Customer is not Associated."
+        );
+        status = MyLibrary.madicineStatus(8);
     }
 }

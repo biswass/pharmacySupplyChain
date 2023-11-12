@@ -2,9 +2,9 @@ pragma solidity >=0.4.25 <0.9.0;
 
 import './Madicine.sol';
 
-/********************************************** MadicineD_P ******************************************/
+/********************************************** MadicineP_C ******************************************/
 
-contract MadicineD_P {
+contract MadicineP_C {
     /// @notice
     address Owner;
 
@@ -24,9 +24,9 @@ contract MadicineD_P {
     /// @notice
     /// @dev Create SubContract for Madicine Transaction
     /// @param BatchID Madicine BatchID
-    /// @param Sender Distributer Ethereum Network Address
+    /// @param Sender Pharma Ethereum Network Address
     /// @param Shipper Transporter Ethereum Network Address
-    /// @param Receiver Pharma Ethereum Network Address
+    /// @param Receiver Customer Ethereum Network Address
     constructor(
         address BatchID,
         address Sender,
@@ -45,7 +45,7 @@ contract MadicineD_P {
     /// @dev Pick Madicine Batch by Associated Transporter
     /// @param BatchID Madicine BatchID
     /// @param Shipper Transporter Ethereum Network Address
-    function pickDP(
+    function pickPC(
         address BatchID,
         address Shipper
     ) public {
@@ -55,17 +55,17 @@ contract MadicineD_P {
         );
         status = packageStatus(1);
 
-        Madicine(BatchID).sendDP(
+        Madicine(BatchID).sendPC(
             receiver,
             sender
         );
     }
 
     /// @notice
-    /// @dev Recieved Madicine Batch by Associate Pharma
+    /// @dev Recieved Madicine Batch by Associate Customer
     /// @param BatchID Madicine BatchID
     /// @param Receiver Pharma Ethereum Network Address
-    function recieveDP(
+    function recievePC(
         address BatchID,
         address Receiver
     ) public {
@@ -75,13 +75,13 @@ contract MadicineD_P {
         );
         status = packageStatus(2);
 
-        Madicine(BatchID).recievedDP(
+        Madicine(BatchID).recievedPC(
             Receiver
         );
     }
 
     /// @notice
-    /// @dev Get Madicine Batch Transaction status in between Distributer and Pharma
+    /// @dev Get Madicine Batch Transaction status in between Pharma and Customer
     /// @return Transaction status
     function getBatchIDStatus() public view returns(
         uint
