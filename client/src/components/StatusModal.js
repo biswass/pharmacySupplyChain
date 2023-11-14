@@ -45,16 +45,10 @@ export default function StatusModal({statusData}) {
         {statusData!=null? (
             <Box sx={style}>
             <Typography id="modal-modal-title" variant="h6" component="h2">
-                {statusData[0]}
+                {statusData[1]}
             </Typography>
             <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Temperature recorded: {statusData[2]}°C <br/>
-            Timestamp: {convertTimestamp(statusData.timestamp._hex)} <br/>
-            Humidity: {statusData.humidity}%<br/>
-            Heat Index: {statusData.heatindex}°C<br/>
-            Product Id: {parseInt(statusData.p_id._hex)}<br/>
-            Total Quantity: {parseInt(statusData.total_quantity._hex)} Units<br/>
-            
+            {statusData[1]}
             </Typography>
             </Box>
         ) : (

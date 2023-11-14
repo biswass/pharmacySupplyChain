@@ -26,15 +26,28 @@ import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import StatusModal from './StatusModal.js';
 
 const DisplayStatus = () => {
-    //const ContractAddress = "0xE4b876ed393E19FbD18eC99118647BcbFE5300F3" //"0xFa56954976bA7d616945c09A7e360499e7038d98";
-    const ContractAddress = "0x7808777C0505ba26460fD7Ce5A25F373Fb5dBA0e";
+    const ContractAddress = "0xE4b876ed393E19FbD18eC99118647BcbFE5300F3" //"0xFa56954976bA7d616945c09A7e360499e7038d98";
+
+    
+    const initialData = [
+        { role: 'Supplier', date: 'Nov 1 2023', timestamp: '0x61A80C0B' },
+        { role: 'Transporter', date: 'Nov 2 2023', timestamp: '0x61A80C0B' },
+        { role: 'Manufacturer', date: 'Nov 3 2023', timestamp: '0x61A80C0B' },
+        { role: 'Transporter', date: 'Nov 4 2023', timestamp: '0x61A80C0B'},
+        { role: 'Wholesaler', date: 'Nov 5 2023', timestamp: '0x61A80C0B' },
+        { role: 'Transporter', date: 'Nov 6 2023', timestamp: '0x61A80C0B' },
+        { role: 'Distributor', date: 'Nov 7 2023', timestamp: '0x61A80C0B' },
+        { role: 'Transporter', date: 'Nov 8 2023', timestamp: '0x61A80C0B' },
+        { role: 'Pharma', date: '0x61A80C0B', timestamp: '0x61A80C0B' }
+    ];
+    //const [data, setData] = useState();
     const [id, setId] = useState(1);
-    const [data, setData] = useState();
+    const [data,setData] = useState(initialData);
 
     async function requestAccount() {
         await window.ethereum.request({ method: "eth_requestAccounts" });
     }
-    console.log("id1: " + id);
+    console.log(id);
     async function getStatus() {
         
         if (typeof window.ethereum !== "undefined") {
@@ -99,6 +112,30 @@ const DisplayStatus = () => {
             ) : (
                 <div>
                     <h1>Product Status</h1>
+
+                <Timeline position="left">
+                {data.map((row, iterator) => (
+                    <TimelineItem key={iterator}>
+                        <TimelineOppositeContent sx={{ py: '10px', px: 2}}>
+                            {convertTimestamp(row.timestamp)}
+                        </TimelineOppositeContent>
+                        <TimelineSeparator>
+                            <StatusModal statusData={row}/>
+                            <TimelineConnector />
+                        </TimelineSeparator>
+                        <TimelineContent sx={{ py: '10px', px: 2 }}>
+                        <Typography variant="h6" component="span">
+                            {row[0]}
+                        </Typography>
+                        {parseInt(row[2], 10)<25? 
+                            <Typography sx={{color: "lightgreen"}}>{row.temperature}</Typography> 
+                        : 
+                            <Typography sx={{color: "orange"}}>{row.role}</Typography>}
+                        </TimelineContent>
+                        
+                    </TimelineItem> 
+                ))}
+                </Timeline>
                 </div>
             )}
         </div>
