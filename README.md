@@ -19,10 +19,6 @@ The Pharmacy supply chain comprises the processes to bring healthcare products f
 - Synchronization between participants
 - Transparent process
 
-#### Application Workflow Diagram
----
-![](https://raw.githubusercontent.com/kamalkishorm/Blockchain_SupplyChain/master/assets/flow/Blockchain_Pharmaceutical_SupplyChain.png)
-
 #### Roles
 ---
 1. Admin
