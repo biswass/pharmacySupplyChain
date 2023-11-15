@@ -23,7 +23,7 @@
  */
 
 const HDWalletProvider = require('truffle-hdwallet-provider');
-const infuraKey = "02b787ae4676470baac9ea2288b785d5";
+const infuraKey = ""; // your infuraKey
 
 const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
@@ -73,7 +73,7 @@ module.exports = {
 		// }  
     sepolia: {
       provider: function() {
-        var mnemonic = "target gown leg blanket shrimp weasel misery wear sense dial quarter mind"; 
+        var mnemonic = ""; // your wallet key
         return new HDWalletProvider(mnemonic, "https://sepolia.infura.io/v3/"+infuraKey, 1);
       },
       gas: 8000000, 

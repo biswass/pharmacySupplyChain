@@ -1,52 +1,49 @@
-# Blockchain : Pharmaceutical SupplyChain
+# Blockchain : Pharmacy SupplyChain
 This project showcases the journey of Medicine on blockchain.
 
-The Pharmaceutical supply chain is the sequence of activities and process to bring raw drugs and matrials from supplier(farms) to processed medicine in Pharm.
+The Pharmacy supply chain comprises the processes to bring healthcare products from supplier to the customer
 
-#### Problems in Exixting System
+#### Problems in Existing System
 ---
-- Shipment visibility
-- Expiration
-- Slow Process and Error prone paper work
-- Mutable and Invalid source
-- Lack of coordination
+- Considerable paperwork
+- Malicous activities eg: expiry date manufacturing
+- Delayed status of shipment
+- Communication between stakeholders
+- Lack of transperancy due to resource transperancy
 
 #### What we are providing
 ---
-- Accurate information across the entire chain at any point and at any location
-- Instant access to real-time updates and alerts if issues are detected
-- Visibility of all handovers in the supply chain
-- Traceability back to source of all materials
-- Seamless collaboration between all parties
-- Reduce paper work and Speedup process
-
-#### Application Workflow Diagram
----
-![](https://raw.githubusercontent.com/kamalkishorm/Blockchain_SupplyChain/master/assets/flow/Blockchain_Pharmaceutical_SupplyChain.png)
+- Minimal paperwork
+- Immutable data
+- Real time tracking of shipments
+- Synchronization between participants
+- Transparent process
 
 #### Roles
 ---
 1. Admin
 2. Supplier
-3. Transfporter
+3. Transporter
 4. Manufacturer
 5. Wholesaler
 6. Distributer
 7. Pharma
+8. Customer
 
-**Admin :** Admin register new users and assigne roles accourding to there work.
-**Supplier :** Supplier supply raw materials manufacturer by creating new batch with details of farm.
-**Transporter :** Transporter are responsible for shipping packages/consignment form one stage to other.
-**Manufacturer :** Manufacturer is responsible to manufacturer new medicine batches for shipping to either Wholesaler or Distribute, by updating information of raw materials details(like batchID and consumption units) that are use to manufacture new batch medicine and quantity.
-**Wholesaler :** Wholesaler is reponsible to receive medicine from Manufacturer and validate medicine quality, than transfer to Distributer.
-**Distrubuter :** Distributer is reponsible to distribute medicne to pharms and do varification on medicine quality and condition.
-**Pharma :** Pharma is reponsible to provide right medicine to customer as per doctor priscribed and update medicine status.
+**Admin :** Register users and allocates roles
+**Supplier :** Supplies raw materials manufacturer by creating new batch with details
+**Transporter :** Ship packages between stages
+**Manufacturer :** Manufacturers new medicine batches for shipping to either Wholesaler/Distributor, by updating information of raw materials details, used to manufacture new batch medicine and quantity
+**Wholesaler :** Receives medicine from manufacturer and validates medicine quality, transfers to Distributer
+**Distributer :** Distributes medicne to pharmacy and verifies medicine quality and condition
+**Pharma :** Provides medicine to customer as per prescription and updates medicine status
+**Customer :** Tracks medicine details and status
 
 #### Tools and Technologies
 ---
-- Solidity (Ethereum Smart Contract Language)
+- Solidity (Ethereum's Smart Contract Language)
 - Metamask (Ethereum wallet)
-- Ropsten test network ( use ropsten faucet to get ethers on ropsten network )
+- Sepolia Test network 
 - Truffle
 - Infura
 - Web3JS
@@ -54,60 +51,92 @@ The Pharmaceutical supply chain is the sequence of activities and process to bri
 
 #### Prerequisites
 ---
-- Nodejs v8.12 or above
-- Truffle v5.0.0 (core: 5.0.0) (http://truffleframework.com/docs/getting_started/installation)
-- Solidity v0.5.0
-- Metamask (https://metamask.io)
-- Ganache (https://truffleframework.com/docs/ganache/quickstart)
+- Nodejs v16.14.0 or above
+- Truffle v5.11.5 (core: 5.11.5)
+- Solidity v0.5.1
+- Ganache
+- Metamask 
+- Web3.js v1.10.0
+
+#### Deployment:
+- truffle compile // compiles the contracts
+- truffle migrate --network sepolia reset // deploys the compiled contract on sepolia test network
+- truffle console --network sepolia // Login to the truffle console
+- storage = await SupplyChain.deployed()  // Shows the deployed contract
+- truffle(sepolia)> storage.address // You got it right, if it prints your contract address in hex as below
+'0xf0790374F2f06355cD599BcF6f6Eff871241c32B'
+- storage.registerUser(walletAddress, name, rplace)
+eg : storage.registerUser('0x2E1eBC8FB7D358DC538e556a8D6683B48d64007C','0x426973776173','0x42656e67616c757275',0) // (parameter1 - wallet address), Biswas(parameter2 - name in hex), Bengaluru(parameter3 - place in hex), 2(parameter4 - admin's role id)
+- Similarly, registered for below roles
+(wallet address), Subhramit, Kolkata, 1(supplierRoleId)
+(wallet address), Ohiduz, Kohima, 2(transporterRoleId)
+(wallet address), Maddy, Trivandrum, 3(manufacturerRoleId)
+(wallet address), Sanshav, Delhi, 4(distributerRoleId)
+(wallet address), Alice, Antartica, 5(pharmaRoleId)
+(wallet address), Bob, Greenland, 6(customerRoleId)
+- Now sign in via the supplier role - In truffle-config.js, return new HDWalletProvider(mnemonic, "https://sepolia.infura.io/v3/"+infuraKey, 1)
+and relogin to the truffle console(truffle console --network sepolia)
+- Create a raw package as the supplier. Command - storage.createRawPackage('0x50617261636574616d6f6c','0x4661726d65722052616d','0x47756a61726174',10,'0x2E1eBC8FB7D358DC538e556a8D6683B48d64007C','0xCAb6ebc4d56B8391251d16eA7f559d15D8C2B827')
+
+#### Supply Chain Contract Business Logic:
+- truffle console --network sepolia // connects to the sepolia network
+- truffle(sepolia)> storage = await SupplyChain.deployed() // stores the contract address in 
+- Created 7 different users, 1 per role
+- Created 3 packages(1 each of 3 products mentioned on Products page) and moved around in different phases of supply chain
+- Track each of them via the status page http://localhost:3000/Status
+
 
 #### Contract Deployment Steps:
 ---
 **Setting up Ethereum Smart Contract:**
 
 ```
-git clone https://github.com/kamalkishorm/Blockchain_SupplyChain.git
+git clone https://github.com/biswass/Blockchain_SupplyChain.git
 cd Blockchain_SupplyChain/
 ```
 **Update truffle.js **
 
 ```
-module.exports =
-{
-    networks:
-    {
-	    development:
-		{
-	   		host: "localhost",
-	   		port: 8545,
-	   		network_id: "*" // Match any network id
-		}
-    },
-    ropsten: {
-    	provider: function() {
-                var mnemonic = "letter casino spread lawn water toward extend public gasp turn wave bone";//put ETH wallet 12 mnemonic code
-                return new HDWalletProvider(mnemonic, "https://ropsten.infura.io/v3/"+infuraKey);
-		    },
-        gas: 8000000,
-        gasPrice: 60000000000,
-		network_id: '3'
-	}
-};
+module.exports = {
+  /**
+   * Networks define how you connect to your ethereum client and let you set the
+   * defaults web3 uses to send transactions. If you don't specify one truffle
+   * will spin up a development blockchain for you on port 9545 when you
+   * run `develop` or `test`. You can ask a truffle command to use a specific
+   * network from the command line, e.g
+   *
+   * $ truffle test --network <network-name>
+   */
+
+  networks: {
+    sepolia: {
+      provider: function() {
+        var mnemonic = "";   //put ETH wallet 12 mnemonic code
+        return new HDWalletProvider(mnemonic, "https://sepolia.infura.io/v3/"+infuraKey, 1); 
+      },
+      gas: 8000000, 
+      gasPrice: 60000000000, 
+      network_id: '11155111', 
+    }
+  }
+}
+
 ```
 Go to your project folder in terminal then execute :
 
 ```
 rm -rf build/
 truffle compile
-truffle migrate --network ropsten reset
+truffle migrate --network sepolia reset
 ```
 **Please note:**
 1. After successfully deployment you will get response in bash terminal like below
 ```
 Starting migrations...
 ======================
-> Network name:    'ropsten'
-> Network id:      3
-> Block gas limit: 8007811
+> Network name:    'sepolia'
+> Network id:      11155111
+> Block gas limit: 30000000 (0x1c9c380)
 
 
 1_initial_migration.js
@@ -115,60 +144,63 @@ Starting migrations...
 
    Deploying 'Migrations'
    ----------------------
-   > transaction hash:    0x22a002f941602ff792cb66ea26b7c9acea8fbde14a7343789e0ae4b349a9ff75
-   > Blocks: 1            Seconds: 109
-   > contract address:    0xC30C388ceD2f27691B1aD0E70c1B51D726343acb
-   > account:             0xdd56707585Bd9392500bBb30eEf767fb33299FF8
-   > balance:             4.00294387495
-   > gas used:            283300
+   > transaction hash:    0x3caffb9ccef50c7ba2a4d712c0ba49fa50522adf0792e8fdf74d411e0dd52922
+   > Blocks: 2            Seconds: 17
+   > contract address:    0xE024d6F98F637710459346662C05C4184c32e938
+   > block number:        4687523
+   > block timestamp:     1699903344
+   > account:             0x262e4BBd3dCBb26d41e82F5ebb8B261A82B40151
+   > balance:             1.20055638
+   > gas used:            204443 (0x31e9b)
    > gas price:           60 gwei
    > value sent:          0 ETH
-   > total cost:          0.016998 ETH
-
+   > total cost:          0.01226658 ETH
 
    > Saving migration to chain.
    > Saving artifacts
    -------------------------------------
-   > Total cost:            0.016998 ETH
+   > Total cost:          0.01226658 ETH
 
 
 2_deploy_supplychain.js
 =======================
-[ '0xdd56707585Bd9392500bBb30eEf767fb33299FF8' ]
+[ '0x262e4BBd3dCBb26d41e82F5ebb8B261A82B40151' ]
 
    Deploying 'SupplyChain'
    -----------------------
-   > transaction hash:    0xd05404fd8a8481e4c867052760f14b5b290473848a9956873df52785819e4946
-   > Blocks: 2            Seconds: 9
-   > contract address:    0xE384741Cb0346543D8f7d5b72d0ff3663FC548d4
-   > account:             0xdd56707585Bd9392500bBb30eEf767fb33299FF8
-   > balance:             3.61046395495
-   > gas used:            6499304
+   > transaction hash:    0x55493fec083a5b1438f9c21645953d2540c191e86bce4d22df7fe35db2749b62
+   > Blocks: 2            Seconds: 17
+   > contract address:    0x7808777C0505ba26460fD7Ce5A25F373Fb5dBA0e
+   > block number:        4687526
+   > block timestamp:     1699903380
+   > account:             0x262e4BBd3dCBb26d41e82F5ebb8B261A82B40151
+   > balance:             0.96100752
+   > gas used:            3946812 (0x3c393c)
    > gas price:           60 gwei
    > value sent:          0 ETH
-   > total cost:          0.38995824 ETH
-
+   > total cost:          0.23680872 ETH
 
    > Saving migration to chain.
    > Saving artifacts
    -------------------------------------
-   > Total cost:          0.38995824 ETH
-
+   > Total cost:          0.23680872 ETH
 
 Summary
 =======
 > Total deployments:   2
-> Final cost:          0.40695624 ETH
+> Final cost:          0.2490753 ETH
 
 ```
 
-#### Blockchain SupplyChain UI:
+#### Pharmacy Supply Chain Frontend:
 ---
-**Setting up SupplyChain UI:**
+**Set up Frontend:**
 
 ```
-git clone https://github.com/kamalkishorm/Pharmaceutical_Supplychain-UI.git
-cd Pharmaceutical_Supplychain-UI/
-npm i
-ng serve
-```
+cd client
+npm install
+cd components -> Go to DisplayProduct.js and DisplayStatus.js -> update const ContractAddress = <deployedSmartContractAddress>
+cd .. // Goes back to client folder
+npm start
+Check http://localhost:3000/ to run the application
+ ```
