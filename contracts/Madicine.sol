@@ -15,9 +15,7 @@ contract Madicine {
 
     address Owner;  
 
-    // address batchid;
-    bytes32 description;
-    bytes32 rawmatriales;
+
     uint256 quantity;
     address shipper;
     address manufacturer;
@@ -25,11 +23,8 @@ contract Madicine {
     address distributer;
     address pharma;
     address customer;
-    MyLibrary.madicineStatus status;
+    MyLibrary.medicineBasicInfo basicInfo;
 
-    uint256 manufacturing_time;
-    uint256 quality_check_time;
-    bytes32 manufacturing_location;
 
     event ShippmentUpdate(
         address indexed BatchID,
@@ -60,13 +55,14 @@ contract Madicine {
     ) public {
         Owner = Manu;
         manufacturer = Manu;
-        description = Des;
-        rawmatriales = RM;
+        basicInfo.Description = Des;
+        basicInfo.RawMaterials = RM;
         quantity = Quant;
         shipper = Shpr;
-        manufacturing_location = manu_loc;
-        manufacturing_time = block.timestamp;
-        quality_check_time = block.timestamp;
+        basicInfo.ManufacturingLocation = manu_loc;
+        basicInfo.ManufacturingTime = block.timestamp;
+        basicInfo.ExpiryTime = block.timestamp + (365 days);
+        basicInfo.QualityCheckTime = block.timestamp;
         if(RcvrType == 1) {
             wholesaler = Rcvr;
         } else if( RcvrType == 2){
@@ -87,8 +83,7 @@ contract Madicine {
         address Pharma
     ) {
         return(
-            MyLibrary.medicineBasicInfo(description, rawmatriales, manufacturing_time, manufacturing_location, 
-            quality_check_time, status), wholesaler, distributer, pharma
+            basicInfo, wholesaler, distributer, pharma
         );
     }
 
@@ -109,7 +104,7 @@ contract Madicine {
     function getBatchIDStatus() public view returns(
         uint256
     ) {
-        return uint256(status);
+        return uint256(basicInfo.Status);
     }
 
     /// @notice
@@ -123,15 +118,15 @@ contract Madicine {
             "Only Associate Shipper can call this function"
         );
         require(
-            status == MyLibrary.madicineStatus(0),
+            basicInfo.Status == MyLibrary.madicineStatus(0),
             "Package must be at Supplier."
         );
 
         if(wholesaler!=address(0x0)){
-            status = MyLibrary.madicineStatus(1);
+            basicInfo.Status = MyLibrary.madicineStatus(1);
             emit ShippmentUpdate(address(this),shipper,wholesaler,1,1);
         }else{
-            status = MyLibrary.madicineStatus(2);
+            basicInfo.Status = MyLibrary.madicineStatus(2);
             emit ShippmentUpdate(address(this),shipper,distributer,1,1);
         }
     }
@@ -151,16 +146,18 @@ contract Madicine {
         );
 
         require(
-            uint256(status) >= 1,
+            uint256(basicInfo.Status) >= 1,
             "Product not picked up yet"
         );
 
-        if(Rcvr == wholesaler && status == MyLibrary.madicineStatus(1)){
-            status = MyLibrary.madicineStatus(3);
+        if(Rcvr == wholesaler && basicInfo.Status == MyLibrary.madicineStatus(1)){
+            basicInfo.Status = MyLibrary.madicineStatus(3);
+            basicInfo.ArrivalTimeAtWholesaler = block.timestamp;
             emit ShippmentUpdate(address(this),shipper,wholesaler,2,3);
             return 1;
-        } else if(Rcvr == distributer && status == MyLibrary.madicineStatus(2)){
-            status = MyLibrary.madicineStatus(4);
+        } else if(Rcvr == distributer && basicInfo.Status == MyLibrary.madicineStatus(2)){
+            basicInfo.Status = MyLibrary.madicineStatus(4);
+            basicInfo.ArrivalTimeAtDistributer = block.timestamp;
             emit ShippmentUpdate(address(this),shipper,distributer,3,4);
             return 2;
         }
@@ -179,7 +176,7 @@ contract Madicine {
             "this Wholesaler is not Associated."
         );
         distributer = receiver;
-        status = MyLibrary.madicineStatus(2);
+        basicInfo.Status = MyLibrary.madicineStatus(2);
     }
 
     /// @notice
@@ -192,7 +189,8 @@ contract Madicine {
             distributer == receiver,
             "This Distributer is not Associated."
         );
-        status = MyLibrary.madicineStatus(4);
+        basicInfo.Status = MyLibrary.madicineStatus(4);
+        basicInfo.ArrivalTimeAtDistributer = block.timestamp;
     }
 
     /// @notice
@@ -208,7 +206,7 @@ contract Madicine {
             "this Distributer is not Associated."
         );
         pharma = receiver;
-        status = MyLibrary.madicineStatus(5);
+        basicInfo.Status = MyLibrary.madicineStatus(5);
     }
 
     /// @notice
@@ -221,7 +219,8 @@ contract Madicine {
             pharma == receiver,
             "This Pharma is not Associated."
         );
-        status = MyLibrary.madicineStatus(6);
+        basicInfo.Status = MyLibrary.madicineStatus(6);
+        basicInfo.ArrivalTimeAtPharma = block.timestamp;
     }
 
 
@@ -238,7 +237,7 @@ contract Madicine {
             "this Pharma is not Associated."
         );
         customer = receiver;
-        status = MyLibrary.madicineStatus(7);
+        basicInfo.Status = MyLibrary.madicineStatus(7);
     }
 
     /// @notice
@@ -251,6 +250,7 @@ contract Madicine {
             customer == receiver,
             "This Customer is not Associated."
         );
-        status = MyLibrary.madicineStatus(8);
+        basicInfo.Status = MyLibrary.madicineStatus(8);
+        basicInfo.SaleTime = block.timestamp;
     }
 }

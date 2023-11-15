@@ -19,8 +19,13 @@ library MyLibrary {
         bytes32 Description;
         bytes32 RawMaterials;
         uint256 ManufacturingTime;
+        uint256 ExpiryTime;
         bytes32 ManufacturingLocation;
         uint256 QualityCheckTime;
+        uint256 ArrivalTimeAtWholesaler;
+        uint256 ArrivalTimeAtDistributer;
+        uint256 ArrivalTimeAtPharma;
+        uint256 SaleTime;
         madicineStatus Status;
     }
 }
