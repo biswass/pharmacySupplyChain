@@ -1,4 +1,7 @@
-pragma solidity >=0.4.25 <0.9.0;
+// SPDX-License-Identifier: UNLICENSED
+// pragma solidity >=0.4.25 <0.9.0;
+pragma solidity >=0.8.0;
+pragma abicoder v2;
 
 library MyLibrary {
     enum madicineStatus {
@@ -15,9 +18,9 @@ library MyLibrary {
     struct medicineBasicInfo{
         bytes32 Description;
         bytes32 RawMaterials;
-        uint ManufacturingTime;
+        uint256 ManufacturingTime;
         bytes32 ManufacturingLocation;
-        uint QualityCheckTime;
+        uint256 QualityCheckTime;
         madicineStatus Status;
     }
 }

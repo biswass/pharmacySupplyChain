@@ -1,9 +1,11 @@
-pragma solidity >=0.4.25 <0.9.0;
+// SPDX-License-Identifier: UNLICENSED
+// pragma solidity >=0.4.25 <0.9.0;
+pragma solidity >=0.8.0;
+pragma abicoder v2;
 
 /********************************************** RawMatrials ******************************************/
 
 contract RawMatrials {
-    /// @notice
     address Owner;
 
     enum packageStatus { atcreator, picked, delivered}
@@ -11,28 +13,19 @@ contract RawMatrials {
         address indexed BatchID,
         address indexed Shipper,
         address indexed Manufacturer,
-        uint TransporterType,
-        uint Status
+        uint256 TransporterType,
+        uint256 Status
     );
-    /// @notice
+
     address productid;
-    /// @notice
     bytes32 description;
-    /// @notice
     bytes32 farmer_name;
-    /// @notice
     bytes32 location;
-    /// @notice
-    uint quantity;
-    /// @notice
+    uint256 quantity;
     address shipper;
-    /// @notice
     address manufacturer;
-    /// @notice
     address supplier;
-    /// @notice
     packageStatus status;
-    /// @notice
     bytes32 packageReceiverDescription;
 
     /// @notice
@@ -49,7 +42,7 @@ contract RawMatrials {
         bytes32 Des,
         bytes32 FN,
         bytes32 Loc,
-        uint Quant,
+        uint256 Quant,
         address Shpr,
         address Rcvr
     ) public {
@@ -78,7 +71,7 @@ contract RawMatrials {
         bytes32 Des,
         bytes32 FN,
         bytes32 Loc,
-        uint Quant,
+        uint256 Quant,
         address Shpr,
         address Rcvr,
         address Splr
@@ -98,9 +91,9 @@ contract RawMatrials {
     /// @dev Get Package Transaction Status
     /// @return Package Status
     function getRawMatrialsStatus() public view returns(
-        uint
+        uint256
     ) {
-        return uint(status);
+        return uint256(status);
     }
 
     /// @notice

@@ -1,4 +1,8 @@
-pragma solidity >=0.4.25 <0.9.0;
+// SPDX-License-Identifier: UNLICENSED
+// pragma solidity >=0.4.25 <0.9.0;
+// pragma experimental ABIEncoderV2;
+pragma solidity >=0.8.0;
+pragma abicoder v2;
 
 import './Library.sol';
 /********************************************** Madicine ******************************************/
@@ -8,41 +12,31 @@ contract Madicine {
     using MyLibrary for MyLibrary.madicineStatus;
     using MyLibrary for MyLibrary.medicineBasicInfo;
 
-    /// @notice
-    address Owner;
+
+    address Owner;  
 
     // address batchid;
-    /// @notice
     bytes32 description;
-    /// @notice
     bytes32 rawmatriales;
-    /// @notice
-    uint quantity;
-    /// @notice
+    uint256 quantity;
     address shipper;
-    /// @notice
     address manufacturer;
-    /// @notice
     address wholesaler;
-    /// @notice
     address distributer;
-    /// @notice
     address pharma;
-    /// @notice
     address customer;
-    /// @notice
     MyLibrary.madicineStatus status;
 
-    uint manufacturing_time;
-    uint quality_check_time;
+    uint256 manufacturing_time;
+    uint256 quality_check_time;
     bytes32 manufacturing_location;
 
     event ShippmentUpdate(
         address indexed BatchID,
         address indexed Shipper,
         address indexed Receiver,
-        uint TransporterType,
-        uint Status
+        uint256 TransporterType,
+        uint256 Status
     );
 
     /// @notice
@@ -58,10 +52,10 @@ contract Madicine {
         address Manu,
         bytes32 Des,
         bytes32 RM,
-        uint Quant,
+        uint256 Quant,
         address Shpr,
         address Rcvr,
-        uint RcvrType,
+        uint256 RcvrType,
         bytes32 manu_loc
     ) public {
         Owner = Manu;
@@ -82,26 +76,21 @@ contract Madicine {
 
     /// @notice
     /// @dev Get Madicine Batch basic Details
-    /// @return Description Details
-    /// @return RawMaterials Details
+    /// @return BasicInfo Details
     /// @return Wholesaler Details
     /// @return Distributer Details
     /// @return Pharma Details
-    /// @return Status Details
-    /// @return ManufacturingTime Details
-    /// @return QualityCheckTime Details
-    /// @return ManufacturingLocation Details
-    // function getMadicineInfo () public view returns(
-    //     MyLibrary.medicineBasicInfo memory BasicInfo,
-    //     address Wholesaler,
-    //     address Distributer,
-    //     address Pharma
-    // ) {
-    //     return(
-    //         MyLibrary.medicineBasicInfo(description, rawmatriales, manufacturing_time, manufacturing_location, 
-    //         quality_check_time, status), wholesaler, distributer, pharma
-    //     );
-    // }
+    function getMadicineInfo () public view returns(
+        MyLibrary.medicineBasicInfo memory BasicInfo,
+        address Wholesaler,
+        address Distributer,
+        address Pharma
+    ) {
+        return(
+            MyLibrary.medicineBasicInfo(description, rawmatriales, manufacturing_time, manufacturing_location, 
+            quality_check_time, status), wholesaler, distributer, pharma
+        );
+    }
 
     /// @notice
     /// @dev Get address Wholesaler, Distributer and Pharma
@@ -118,9 +107,9 @@ contract Madicine {
     /// @dev Get Madicine Batch Transaction Status
     /// @return Madicine Transaction Status
     function getBatchIDStatus() public view returns(
-        uint
+        uint256
     ) {
-        return uint(status);
+        return uint256(status);
     }
 
     /// @notice
@@ -153,7 +142,7 @@ contract Madicine {
     function receivedPackage(
         address Rcvr
     ) public
-    returns(uint rcvtype)
+    returns(uint256 rcvtype)
     {
 
         require(
@@ -162,7 +151,7 @@ contract Madicine {
         );
 
         require(
-            uint(status) >= 1,
+            uint256(status) >= 1,
             "Product not picked up yet"
         );
 

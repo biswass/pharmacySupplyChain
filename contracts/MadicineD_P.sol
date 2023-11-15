@@ -1,24 +1,21 @@
-pragma solidity >=0.4.25 <0.9.0;
+// SPDX-License-Identifier: UNLICENSED
+// pragma solidity >=0.4.25 <0.9.0;
+pragma solidity >=0.8.0;
+pragma abicoder v2;
 
 import './Madicine.sol';
 
 /********************************************** MadicineD_P ******************************************/
 
 contract MadicineD_P {
-    /// @notice
     address Owner;
 
     enum packageStatus { atcreator, picked, delivered}
 
-    /// @notice
     address batchid;
-    /// @notice
     address sender;
-    /// @notice
     address shipper;
-    /// @notice
     address receiver;
-    /// @notice
     packageStatus status;
 
     /// @notice
@@ -84,9 +81,9 @@ contract MadicineD_P {
     /// @dev Get Madicine Batch Transaction status in between Distributer and Pharma
     /// @return Transaction status
     function getBatchIDStatus() public view returns(
-        uint
+        uint256
     ) {
-        return uint(status);
+        return uint256(status);
     }
 
 }
