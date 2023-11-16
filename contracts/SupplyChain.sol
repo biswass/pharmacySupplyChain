@@ -16,6 +16,7 @@ contract SupplyChain {
 
     using MyLibrary for MyLibrary.madicineStatus;
     using MyLibrary for MyLibrary.medicineBasicInfo;
+    using MyLibrary for MyLibrary.rawMaterialInfo;
 
     /// @notice
     address public Owner;
@@ -304,6 +305,7 @@ contract SupplyChain {
     function manufacturMadicine(
         bytes32 Des, 
         bytes32 RM,
+        address RawMaterialAddres,
         uint256 Quant,
         address Shpr,
         address Rcvr,
@@ -322,6 +324,7 @@ contract SupplyChain {
             msg.sender,
             Des,
             RM,
+            RawMaterialAddres,
             Quant,
             Shpr,
             Rcvr,
@@ -753,16 +756,17 @@ contract SupplyChain {
 
 
     function getMedicineBatchInfo(address batchid) public view returns(
+        MyLibrary.rawMaterialInfo memory rawMaterialsInfo,
         MyLibrary.medicineBasicInfo memory BasicInfo,
         bytes32 WholesalerLocation,
         bytes32 DistributerLocation,
         bytes32 PharmaLocation
     ){
         (MyLibrary.medicineBasicInfo memory basic_info,
-        address whlslr, address dstri, address phrm) = Madicine(batchid).getMadicineInfo();
+        address whlslr, address dstri, address phrm, address RMA) = Madicine(batchid).getMadicineInfo();
         
         return (
-            basic_info, 
+            RawMatrials(RMA).getRawInfo(), basic_info, 
             UsersDetails[whlslr].location, UsersDetails[dstri].location, UsersDetails[phrm].location
         );
     }

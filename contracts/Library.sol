@@ -28,4 +28,9 @@ library MyLibrary {
         uint256 SaleTime;
         madicineStatus Status;
     }
+    struct rawMaterialInfo{
+        bytes32 farmer_name;
+        bytes32 farm_location;
+        uint256 RawMaterialArrivalTimeAtManufacturer;
+    }
 }

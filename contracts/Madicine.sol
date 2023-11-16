@@ -23,6 +23,7 @@ contract Madicine {
     address distributer;
     address pharma;
     address customer;
+    address rawmaterialAddress;
     MyLibrary.medicineBasicInfo basicInfo;
 
 
@@ -47,6 +48,7 @@ contract Madicine {
         address Manu,
         bytes32 Des,
         bytes32 RM,
+        address RMA,
         uint256 Quant,
         address Shpr,
         address Rcvr,
@@ -57,6 +59,8 @@ contract Madicine {
         manufacturer = Manu;
         basicInfo.Description = Des;
         basicInfo.RawMaterials = RM;
+        rawmaterialAddress = RMA;
+
         quantity = Quant;
         shipper = Shpr;
         basicInfo.ManufacturingLocation = manu_loc;
@@ -80,10 +84,11 @@ contract Madicine {
         MyLibrary.medicineBasicInfo memory BasicInfo,
         address Wholesaler,
         address Distributer,
-        address Pharma
+        address Pharma,
+        address RMA
     ) {
         return(
-            basicInfo, wholesaler, distributer, pharma
+            basicInfo, wholesaler, distributer, pharma, rawmaterialAddress
         );
     }
 

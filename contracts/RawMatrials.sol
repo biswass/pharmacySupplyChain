@@ -3,9 +3,13 @@
 pragma solidity >=0.8.0;
 pragma abicoder v2;
 
+import './Library.sol';
 /********************************************** RawMatrials ******************************************/
 
 contract RawMatrials {
+
+    using MyLibrary for MyLibrary.rawMaterialInfo;
+
     address Owner;
 
     enum packageStatus { atcreator, picked, delivered}
@@ -25,6 +29,7 @@ contract RawMatrials {
     address shipper;
     address manufacturer;
     address supplier;
+    uint256 deliverytime;
     packageStatus status;
     bytes32 packageReceiverDescription;
 
@@ -131,6 +136,11 @@ contract RawMatrials {
             "Product not picked up yet"
         );
         status = packageStatus(2);
+        deliverytime = block.timestamp;
         emit ShippmentUpdate(address(this),shipper,manufacturer,1,2);
+    }
+
+    function getRawInfo() public view returns (MyLibrary.rawMaterialInfo memory rawInfo){
+        return MyLibrary.rawMaterialInfo(farmer_name, location, deliverytime);
     }
 }
