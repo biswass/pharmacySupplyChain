@@ -1,11 +1,8 @@
-// SPDX-License-Identifier: UNLICENSED
-// pragma solidity >=0.4.21 <0.9.0;
-pragma solidity >=0.8.0;
-pragma abicoder v2;
+pragma solidity >=0.4.21 <0.9.0;
 
 contract Migrations {
   address public owner;
-  uint256 public last_completed_migration;
+  uint public last_completed_migration;
 
   constructor() public {
     owner = msg.sender;
@@ -15,7 +12,7 @@ contract Migrations {
     if (msg.sender == owner) _;
   }
 
-  function setCompleted(uint256 completed) public restricted {
+  function setCompleted(uint completed) public restricted {
     last_completed_migration = completed;
   }
 

@@ -1,7 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
-// pragma solidity >=0.4.25 <0.9.0;
-pragma solidity >=0.8.0;
-pragma abicoder v2;
+pragma solidity >=0.4.25 <0.9.0;
 
 library MyLibrary {
     enum madicineStatus {
@@ -15,17 +12,21 @@ library MyLibrary {
         picked4C,
         deliveredatC
     }
-    struct medicineBasicInfo{
+    struct medicineBasicInfo {
         bytes32 Description;
         bytes32 RawMaterials;
-        uint256 ManufacturingTime;
-        uint256 ExpiryTime;
+        uint ManufacturingTime;
         bytes32 ManufacturingLocation;
-        uint256 QualityCheckTime;
-        uint256 ArrivalTimeAtWholesaler;
-        uint256 ArrivalTimeAtDistributer;
-        uint256 ArrivalTimeAtPharma;
-        uint256 SaleTime;
+        uint QualityCheckTime;
         madicineStatus Status;
     }
+
+    event ShippmentUpdate(
+        address indexed BatchID,
+        address indexed Shipper,
+        address indexed Receiver,
+        uint TransporterType,
+        MyLibrary.madicineStatus status
+        // uint timestamp
+    );
 }

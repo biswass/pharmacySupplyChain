@@ -1,7 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
-// pragma solidity >=0.4.25 <0.6.0;
-pragma solidity >=0.8.0;
-pragma abicoder v2;
+pragma solidity >=0.4.25 <0.6.0;
 
 contract SupplyChain_OLD {
 

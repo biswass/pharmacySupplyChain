@@ -1,7 +1,5 @@
 pragma solidity >=0.4.25 <0.9.0;
 
-import "./Library.sol";
-
 /********************************************** RawMatrials ******************************************/
 
 contract RawMatrials {
@@ -13,13 +11,13 @@ contract RawMatrials {
         picked,
         delivered
     }
-    // event MyLibrary.ShippmentUpdate(
-    //     address indexed BatchID,
-    //     address indexed Shipper,
-    //     address indexed Manufacturer,
-    //     uint TransporterType,
-    //     uint Status
-    // );
+    event ShippmentUpdate(
+        address indexed BatchID,
+        address indexed Shipper,
+        address indexed Manufacturer,
+        uint TransporterType,
+        uint Status
+    );
     /// @notice
     address productid;
     /// @notice
@@ -69,13 +67,6 @@ contract RawMatrials {
         manufacturer = Rcvr;
         supplier = Splr;
         status = packageStatus(0);
-        emit MyLibrary.ShippmentUpdate(
-            address(this),
-            Shpr,
-            Rcvr,
-            1,
-            MyLibrary.madicineStatus(0)
-        );
     }
 
     /// @notice
@@ -128,13 +119,7 @@ contract RawMatrials {
         );
         require(status == packageStatus(0), "Package must be at Supplier.");
         status = packageStatus(1);
-        emit MyLibrary.ShippmentUpdate(
-            address(this),
-            shipper,
-            manufacturer,
-            1,
-            MyLibrary.madicineStatus(1)
-        );
+        emit ShippmentUpdate(address(this), shipper, manufacturer, 1, 1);
     }
 
     /// @notice
@@ -148,12 +133,6 @@ contract RawMatrials {
 
         require(status == packageStatus(1), "Product not picked up yet");
         status = packageStatus(2);
-        emit MyLibrary.ShippmentUpdate(
-            address(this),
-            shipper,
-            manufacturer,
-            1,
-            MyLibrary.madicineStatus(2)
-        );
+        emit ShippmentUpdate(address(this), shipper, manufacturer, 1, 2);
     }
 }

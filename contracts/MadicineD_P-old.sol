@@ -1,18 +1,14 @@
 pragma solidity >=0.4.25 <0.9.0;
 
-import "./Madicine.sol";
+import './Madicine.sol';
 
-/********************************************** MadicineW_D ******************************************/
+/********************************************** MadicineD_P ******************************************/
 
-contract MadicineW_D {
+contract MadicineD_P {
     /// @notice
     address Owner;
 
-    enum packageStatus {
-        atcreator,
-        picked,
-        delivered
-    }
+    enum packageStatus { atcreator, picked, delivered}
 
     /// @notice
     address batchid;
@@ -28,9 +24,9 @@ contract MadicineW_D {
     /// @notice
     /// @dev Create SubContract for Madicine Transaction
     /// @param BatchID Madicine BatchID
-    /// @param Sender Wholesaler Ethereum Network Address
+    /// @param Sender Distributer Ethereum Network Address
     /// @param Shipper Transporter Ethereum Network Address
-    /// @param Receiver Distributer Ethereum Network Address
+    /// @param Receiver Pharma Ethereum Network Address
     constructor(
         address BatchID,
         address Sender,
@@ -43,47 +39,54 @@ contract MadicineW_D {
         shipper = Shipper;
         receiver = Receiver;
         status = packageStatus(0);
-        emit MyLibrary.ShippmentUpdate(
-            BatchID,
-            shipper,
-            receiver,
-            1,
-            MyLibrary.madicineStatus(0)
-        );
     }
 
     /// @notice
     /// @dev Pick Madicine Batch by Associated Transporter
     /// @param BatchID Madicine BatchID
     /// @param Shipper Transporter Ethereum Network Address
-    function pickWD(address BatchID, address Shipper) public {
+    function pickDP(
+        address BatchID,
+        address Shipper
+    ) public {
         require(
             Shipper == shipper,
             "Only Associated shipper can call this function."
         );
         status = packageStatus(1);
 
-        Madicine(BatchID).sendWD(receiver, sender);
+        Madicine(BatchID).sendDP(
+            receiver,
+            sender
+        );
     }
 
     /// @notice
-    /// @dev Recieved Madicine Batch by Associate Distributer
+    /// @dev Recieved Madicine Batch by Associate Pharma
     /// @param BatchID Madicine BatchID
-    /// @param Receiver Distributer Ethereum Network Address
-    function recieveWD(address BatchID, address Receiver) public {
+    /// @param Receiver Pharma Ethereum Network Address
+    function recieveDP(
+        address BatchID,
+        address Receiver
+    ) public {
         require(
             Receiver == receiver,
             "Only Associated receiver can call this function."
         );
         status = packageStatus(2);
 
-        Madicine(BatchID).recievedWD(Receiver);
+        Madicine(BatchID).recievedDP(
+            Receiver
+        );
     }
 
     /// @notice
-    /// @dev Get Madicine Batch Transaction status in between Wholesaler and Distributer
+    /// @dev Get Madicine Batch Transaction status in between Distributer and Pharma
     /// @return Transaction status
-    function getBatchIDStatus() public view returns (uint) {
+    function getBatchIDStatus() public view returns(
+        uint
+    ) {
         return uint(status);
     }
+
 }
