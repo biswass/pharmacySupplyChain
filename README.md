@@ -3,6 +3,8 @@ This project showcases the journey of Medicine on blockchain.
 
 The Pharmacy supply chain comprises the processes to bring healthcare products from supplier to the customer
 
+To be extended further to customize the mining process, reward mechanism and concensus algorithm
+
 #### Problems in Existing System
 ---
 - Considerable paperwork
