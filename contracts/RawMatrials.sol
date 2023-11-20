@@ -3,23 +3,27 @@
 pragma solidity >=0.8.0;
 pragma abicoder v2;
 
-import './Library.sol';
+import "./Library.sol";
+
 /********************************************** RawMatrials ******************************************/
 
 contract RawMatrials {
-
     using MyLibrary for MyLibrary.rawMaterialInfo;
 
     address Owner;
 
-    enum packageStatus { atcreator, picked, delivered}
-    event ShippmentUpdate(
-        address indexed BatchID,
-        address indexed Shipper,
-        address indexed Manufacturer,
-        uint256 TransporterType,
-        uint256 Status
-    );
+    enum packageStatus {
+        atcreator,
+        picked,
+        delivered
+    }
+    // event ShippmentUpdate(
+    //     address indexed BatchID,
+    //     address indexed Shipper,
+    //     address indexed Manufacturer,
+    //     uint256 TransporterType,
+    //     uint256 Status
+    // );
 
     address productid;
     bytes32 description;
@@ -42,7 +46,7 @@ contract RawMatrials {
     /// @param Quant Number of units in a package
     /// @param Shpr Transporter Ethereum Network Address
     /// @param Rcvr Manufacturer Ethereum Network Address
-    constructor (
+    constructor(
         address Splr,
         bytes32 Des,
         bytes32 FN,
@@ -61,6 +65,13 @@ contract RawMatrials {
         manufacturer = Rcvr;
         supplier = Splr;
         status = packageStatus(0);
+        emit MyLibrary.ShippmentUpdate(
+            address(this),
+            Shpr,
+            Rcvr,
+            1,
+            MyLibrary.madicineStatus(0)
+        );
     }
 
     /// @notice
@@ -72,16 +83,20 @@ contract RawMatrials {
     /// @return Shpr Details
     /// @return Rcvr Details
     /// @return Splr Details
-    function getSuppliedRawMatrials () public view returns(
-        bytes32 Des,
-        bytes32 FN,
-        bytes32 Loc,
-        uint256 Quant,
-        address Shpr,
-        address Rcvr,
-        address Splr
-    ) {
-        return(
+    function getSuppliedRawMatrials()
+        public
+        view
+        returns (
+            bytes32 Des,
+            bytes32 FN,
+            bytes32 Loc,
+            uint256 Quant,
+            address Shpr,
+            address Rcvr,
+            address Splr
+        )
+    {
+        return (
             description,
             farmer_name,
             location,
@@ -95,52 +110,55 @@ contract RawMatrials {
     /// @notice
     /// @dev Get Package Transaction Status
     /// @return Package Status
-    function getRawMatrialsStatus() public view returns(
-        uint256
-    ) {
+    function getRawMatrialsStatus() public view returns (uint256) {
         return uint256(status);
     }
 
     /// @notice
     /// @dev Pick Package by Associate Transporter
     /// @param shpr Transporter Ethereum Network Address
-    function pickPackage(
-        address shpr
-    ) public {
+    function pickPackage(address shpr) public {
         require(
             shpr == shipper,
             "Only Associate Shipper can call this function"
         );
-        require(
-            status == packageStatus(0),
-            "Package must be at Supplier."
-        );
+        require(status == packageStatus(0), "Package must be at Supplier.");
         status = packageStatus(1);
-        emit ShippmentUpdate(address(this),shipper,manufacturer,1,1);
+        emit MyLibrary.ShippmentUpdate(
+            address(this),
+            shipper,
+            manufacturer,
+            1,
+            MyLibrary.madicineStatus(1)
+        );
     }
 
     /// @notice
     /// @dev Received Package Status Update By Associated Manufacturer
     /// @param manu Manufacturer Ethereum Network Address
-    function receivedPackage(
-        address manu
-    ) public {
-
+    function receivedPackage(address manu) public {
         require(
             manu == manufacturer,
             "Only Associate Manufacturer can call this function"
         );
 
-        require(
-            status == packageStatus(1),
-            "Product not picked up yet"
-        );
+        require(status == packageStatus(1), "Product not picked up yet");
         status = packageStatus(2);
         deliverytime = block.timestamp;
-        emit ShippmentUpdate(address(this),shipper,manufacturer,1,2);
+        emit MyLibrary.ShippmentUpdate(
+            address(this),
+            shipper,
+            manufacturer,
+            1,
+            MyLibrary.madicineStatus(2)
+        );
     }
 
-    function getRawInfo() public view returns (MyLibrary.rawMaterialInfo memory rawInfo){
+    function getRawInfo()
+        public
+        view
+        returns (MyLibrary.rawMaterialInfo memory rawInfo)
+    {
         return MyLibrary.rawMaterialInfo(farmer_name, location, deliverytime);
     }
 }

@@ -15,7 +15,7 @@ library MyLibrary {
         picked4C,
         deliveredatC
     }
-    struct medicineBasicInfo{
+    struct medicineBasicInfo {
         bytes32 Description;
         bytes32 RawMaterials;
         uint256 ManufacturingTime;
@@ -28,9 +28,17 @@ library MyLibrary {
         uint256 SaleTime;
         madicineStatus Status;
     }
-    struct rawMaterialInfo{
+    struct rawMaterialInfo {
         bytes32 farmer_name;
         bytes32 farm_location;
         uint256 RawMaterialArrivalTimeAtManufacturer;
     }
+    event ShippmentUpdate(
+        address indexed BatchID,
+        address indexed Shipper,
+        address indexed Receiver,
+        uint TransporterType,
+        MyLibrary.madicineStatus status
+        // uint timestamp
+    );
 }
