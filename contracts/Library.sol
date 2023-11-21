@@ -37,8 +37,7 @@ library MyLibrary {
         address indexed BatchID,
         address indexed Shipper,
         address indexed Receiver,
-        uint TransporterType,
+        uint timestamp,
         MyLibrary.madicineStatus status
-        // uint timestamp
     );
 }

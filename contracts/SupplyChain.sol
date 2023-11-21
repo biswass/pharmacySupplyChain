@@ -207,7 +207,14 @@ contract SupplyChain {
             Rcvr
         );
         supplierRawProductInfo[msg.sender].push(address(rawData));
-        emit RawSupplyInit(address(rawData), msg.sender, Shpr, Rcvr);
+        // emit RawSupplyInit(address(rawData), msg.sender, Shpr, Rcvr);
+        emit MyLibrary.ShippmentUpdate(
+            address(rawData),
+            Shpr,
+            Rcvr,
+            block.timestamp,
+            MyLibrary.madicineStatus(0)
+        );
     }
 
     /// @notice
@@ -256,18 +263,53 @@ contract SupplyChain {
         if (transportertype == 1) {
             // Supplier to Manufacturer
             RawMatrials(pid).pickPackage(msg.sender);
+            emit MyLibrary.ShippmentUpdate(
+                address(pid),
+                msg.sender,
+                address(0),
+                block.timestamp,
+                MyLibrary.madicineStatus(1)
+            );
         } else if (transportertype == 2) {
             // Manufacturer to Wholesaler OR Manufacturer to Distributer
             Madicine(pid).pickPackage(msg.sender);
+            emit MyLibrary.ShippmentUpdate(
+                address(pid),
+                msg.sender,
+                address(0),
+                block.timestamp,
+                MyLibrary.madicineStatus(1)
+            );
         } else if (transportertype == 3) {
             // Wholesaler to Distributer
             MadicineW_D(cid).pickWD(pid, msg.sender);
+            emit MyLibrary.ShippmentUpdate(
+                address(pid),
+                msg.sender,
+                address(0),
+                block.timestamp,
+                MyLibrary.madicineStatus(2)
+            );
         } else if (transportertype == 4) {
             // Distrubuter to Pharma
             MadicineD_P(cid).pickDP(pid, msg.sender);
+            emit MyLibrary.ShippmentUpdate(
+                address(pid),
+                msg.sender,
+                address(0),
+                block.timestamp,
+                MyLibrary.madicineStatus(5)
+            );
         } else if (transportertype == 5) {
             // Pharma to Customer
             MadicineP_C(cid).pickPC(pid, msg.sender);
+            emit MyLibrary.ShippmentUpdate(
+                address(pid),
+                msg.sender,
+                address(0),
+                block.timestamp,
+                MyLibrary.madicineStatus(7)
+            );
         }
     }
 
@@ -285,6 +327,13 @@ contract SupplyChain {
         );
 
         RawMatrials(pid).receivedPackage(msg.sender);
+        emit MyLibrary.ShippmentUpdate(
+            address(pid),
+            address(0),
+            msg.sender,
+            block.timestamp,
+            MyLibrary.madicineStatus(2)
+        );
         RawPackagesAtManufacturer[msg.sender].push(pid);
     }
 
@@ -357,7 +406,14 @@ contract SupplyChain {
         );
 
         ManufactureredMadicineBatches[msg.sender].push(address(m));
-        emit MadicineNewBatch(address(m), msg.sender, Shpr, Rcvr);
+        // emit MadicineNewBatch(address(m), msg.sender, Shpr, Rcvr);
+        emit MyLibrary.ShippmentUpdate(
+            address(m),
+            Shpr,
+            Rcvr,
+            block.timestamp,
+            MyLibrary.madicineStatus(0)
+        );
     }
 
     /// @notice
@@ -401,12 +457,36 @@ contract SupplyChain {
         );
 
         uint256 rtype = Madicine(batchid).receivedPackage(msg.sender);
+        if (UsersDetails[msg.sender].role == roles.wholesaler) {
+            emit MyLibrary.ShippmentUpdate(
+                address(batchid),
+                address(0),
+                msg.sender,
+                block.timestamp,
+                MyLibrary.madicineStatus(3)
+            );
+        } else {
+            emit MyLibrary.ShippmentUpdate(
+                address(batchid),
+                address(0),
+                msg.sender,
+                block.timestamp,
+                MyLibrary.madicineStatus(4)
+            );
+        }
         if (rtype == 1) {
             MadicineBatchesAtWholesaler[msg.sender].push(batchid);
         } else if (rtype == 2) {
             MadicineBatchAtDistributer[msg.sender].push(batchid);
             if (Madicine(batchid).getWDP()[0] != address(0)) {
                 MadicineW_D(cid).recieveWD(batchid, msg.sender);
+                emit MyLibrary.ShippmentUpdate(
+                    address(batchid),
+                    address(0),
+                    msg.sender,
+                    block.timestamp,
+                    MyLibrary.madicineStatus(4)
+                );
             }
         }
     }
@@ -438,6 +518,13 @@ contract SupplyChain {
         );
         MadicineWtoD[msg.sender].push(address(wd));
         MadicineWtoDTxContract[BatchID] = address(wd);
+        emit MyLibrary.ShippmentUpdate(
+            BatchID,
+            Shipper,
+            Receiver,
+            block.timestamp,
+            MyLibrary.madicineStatus(2)
+        );
     }
 
     /// @notice
@@ -535,6 +622,13 @@ contract SupplyChain {
         );
         MadicineDtoP[msg.sender].push(address(dp));
         MadicineDtoPTxContract[BatchID] = address(dp);
+        emit MyLibrary.ShippmentUpdate(
+            BatchID,
+            Shipper,
+            Receiver,
+            block.timestamp,
+            MyLibrary.madicineStatus(5)
+        );
     }
 
     /// @notice
@@ -620,6 +714,13 @@ contract SupplyChain {
         );
         MadicineD_P(cid).recieveDP(batchid, msg.sender);
         MadicineBatchAtPharma[msg.sender].push(batchid);
+        emit MyLibrary.ShippmentUpdate(
+            address(batchid),
+            address(0),
+            msg.sender,
+            block.timestamp,
+            MyLibrary.madicineStatus(6)
+        );
         sale[batchid] = salestatus(1);
     }
 
@@ -646,6 +747,13 @@ contract SupplyChain {
         );
         MadicinePtoC[msg.sender].push(address(pc));
         MadicinePtoCTxContract[BatchID] = address(pc);
+        emit MyLibrary.ShippmentUpdate(
+            BatchID,
+            Shipper,
+            Receiver,
+            block.timestamp,
+            MyLibrary.madicineStatus(7)
+        );
         updateSaleStatus(BatchID, 2);
     }
 
@@ -765,6 +873,13 @@ contract SupplyChain {
             "Only Customer can call this function."
         );
         MadicineP_C(cid).recievePC(batchid, msg.sender);
+        emit MyLibrary.ShippmentUpdate(
+            address(batchid),
+            address(0),
+            msg.sender,
+            block.timestamp,
+            MyLibrary.madicineStatus(8)
+        );
     }
 
     /********************************************** For Everyone ******************************************/
