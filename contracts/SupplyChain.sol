@@ -213,9 +213,12 @@ contract SupplyChain {
             Shpr,
             Rcvr,
             block.timestamp,
-            MyLibrary.madicineStatus(0)
+            MyLibrary.madicineStatus(0),
+            0
         );
     }
+
+    //0 => supplier
 
     /// @notice
     /// @dev  Get Count of created package by supplier(caller)
@@ -268,7 +271,8 @@ contract SupplyChain {
                 msg.sender,
                 address(0),
                 block.timestamp,
-                MyLibrary.madicineStatus(1)
+                MyLibrary.madicineStatus(1),
+                1
             );
         } else if (transportertype == 2) {
             // Manufacturer to Wholesaler OR Manufacturer to Distributer
@@ -278,7 +282,8 @@ contract SupplyChain {
                 msg.sender,
                 address(0),
                 block.timestamp,
-                MyLibrary.madicineStatus(1)
+                MyLibrary.madicineStatus(1),
+                2
             );
         } else if (transportertype == 3) {
             // Wholesaler to Distributer
@@ -288,7 +293,8 @@ contract SupplyChain {
                 msg.sender,
                 address(0),
                 block.timestamp,
-                MyLibrary.madicineStatus(2)
+                MyLibrary.madicineStatus(2),
+                3
             );
         } else if (transportertype == 4) {
             // Distrubuter to Pharma
@@ -298,7 +304,8 @@ contract SupplyChain {
                 msg.sender,
                 address(0),
                 block.timestamp,
-                MyLibrary.madicineStatus(5)
+                MyLibrary.madicineStatus(5),
+                4
             );
         } else if (transportertype == 5) {
             // Pharma to Customer
@@ -308,7 +315,8 @@ contract SupplyChain {
                 msg.sender,
                 address(0),
                 block.timestamp,
-                MyLibrary.madicineStatus(7)
+                MyLibrary.madicineStatus(7),
+                5
             );
         }
     }
@@ -332,7 +340,8 @@ contract SupplyChain {
             address(0),
             msg.sender,
             block.timestamp,
-            MyLibrary.madicineStatus(2)
+            MyLibrary.madicineStatus(2),
+            6
         );
         RawPackagesAtManufacturer[msg.sender].push(pid);
     }
@@ -412,7 +421,8 @@ contract SupplyChain {
             Shpr,
             Rcvr,
             block.timestamp,
-            MyLibrary.madicineStatus(0)
+            MyLibrary.madicineStatus(0),
+            6
         );
     }
 
@@ -463,7 +473,8 @@ contract SupplyChain {
                 address(0),
                 msg.sender,
                 block.timestamp,
-                MyLibrary.madicineStatus(3)
+                MyLibrary.madicineStatus(3),
+                7
             );
         } else {
             emit MyLibrary.ShippmentUpdate(
@@ -471,7 +482,8 @@ contract SupplyChain {
                 address(0),
                 msg.sender,
                 block.timestamp,
-                MyLibrary.madicineStatus(4)
+                MyLibrary.madicineStatus(4),
+                8
             );
         }
         if (rtype == 1) {
@@ -485,7 +497,8 @@ contract SupplyChain {
                     address(0),
                     msg.sender,
                     block.timestamp,
-                    MyLibrary.madicineStatus(4)
+                    MyLibrary.madicineStatus(4),
+                    8
                 );
             }
         }
@@ -523,7 +536,8 @@ contract SupplyChain {
             Shipper,
             Receiver,
             block.timestamp,
-            MyLibrary.madicineStatus(2)
+            MyLibrary.madicineStatus(2),
+            9
         );
     }
 
@@ -627,7 +641,8 @@ contract SupplyChain {
             Shipper,
             Receiver,
             block.timestamp,
-            MyLibrary.madicineStatus(5)
+            MyLibrary.madicineStatus(5),
+            10
         );
     }
 
@@ -719,7 +734,8 @@ contract SupplyChain {
             address(0),
             msg.sender,
             block.timestamp,
-            MyLibrary.madicineStatus(6)
+            MyLibrary.madicineStatus(6),
+            11
         );
         sale[batchid] = salestatus(1);
     }
@@ -752,7 +768,8 @@ contract SupplyChain {
             Shipper,
             Receiver,
             block.timestamp,
-            MyLibrary.madicineStatus(7)
+            MyLibrary.madicineStatus(7),
+            12
         );
         updateSaleStatus(BatchID, 2);
     }
@@ -878,7 +895,8 @@ contract SupplyChain {
             address(0),
             msg.sender,
             block.timestamp,
-            MyLibrary.madicineStatus(8)
+            MyLibrary.madicineStatus(8),
+            13
         );
     }
 
