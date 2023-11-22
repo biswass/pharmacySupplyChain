@@ -8,7 +8,8 @@
     "test": "test"
   },
   "dependencies": {
-    "truffle-hdwallet-provider": "^1.0.17"
+    "truffle-hdwallet-provider": "^1.0.17",
+    "web3": "^4.2.2"
   },
   "scripts": {
     "docs:init": "node_modules/.bin/doxity init",
