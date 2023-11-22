@@ -40,7 +40,7 @@ const DisplayWorkers = () => {
     async function getWorker() {
     
         //const ContractAddress = "0xE4b876ed393E19FbD18eC99118647BcbFE5300F3"
-        const ContractAddress = "0xabDf73B90E87Fd0071C714567214e9c64F504B88";
+        const ContractAddress = "0x70754B825f031f1aCF2666adE3A902546596042c";
         if (typeof window.ethereum !== "undefined") {
             await requestAccount();
             const provider = new ethers.providers.Web3Provider(window.ethereum);

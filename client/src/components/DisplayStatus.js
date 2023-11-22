@@ -28,7 +28,7 @@ import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import StatusModal from './StatusModal.js';
 
 const DisplayStatus = () => {
-    const ContractAddress = "0xabDf73B90E87Fd0071C714567214e9c64F504B88" //"0xFa56954976bA7d616945c09A7e360499e7038d98";
+    const ContractAddress = "0x70754B825f031f1aCF2666adE3A902546596042c" //"0xFa56954976bA7d616945c09A7e360499e7038d98";
     const searchResults = "";
     const { getInfo1 } = require('./events.js');
     const initialData = [
@@ -90,7 +90,7 @@ const DisplayStatus = () => {
                 //console.log("addr: ", itemAddress);
 
                 const updatedData = searchResults.map(result => ({
-                    role: result.returnValues[1],
+                    role: result.returnValues[5],
                     date: 'Nov 1 2023', // You might want to update this based on your logic
                     timestamp: result.returnValues[3]
                 }));
@@ -118,6 +118,30 @@ const DisplayStatus = () => {
         //const date = new Date(Number(timestamp.toString()) * 1000n); // Convert BigInt to string, then to Number, and multiply by 1000n for milliseconds
         const options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', timeZoneName: 'short' };
         return new Intl.DateTimeFormat('en-US', options).format(date1);
+    }
+
+    function convertSupplyChainStatus(statusCode) {
+        statusCode = Number(statusCode);
+        console.log('L125 statusCode : ',statusCode)
+        const statusMap = {
+            0: 'Supplier Created',
+            1: 'In Transit: Supplier to Manufacturer',
+            2: 'In Transit: Manufacturer to Wholesaler or Distributor',
+            3: 'In Transit: Wholesaler to Distributor',
+            4: 'In Transit: Distributor to Pharma',
+            5: 'In Transit: Pharma to Customer',
+            6: 'Received: Manufacturer Medicine',
+            7: 'Received by Wholesaler',
+            8: 'Received by Distributor',
+            9: 'Pickup Scheduled: Wholesaler to Distributor',
+            10: 'Pickup Scheduled: Distributor to Pharma',
+            11: 'Received at Pharma',
+            12: 'Pickup Scheduled: Pharma to Customer',
+            13: 'Received by Customer',
+            14: 'Manufactured Medicine'
+        };
+        console.log('L143 statusMap : ',statusMap[statusCode] || 'Unknown Status')
+        return statusMap[statusCode] || 'Unknown Status';
     }
 
     return (
@@ -168,7 +192,7 @@ const DisplayStatus = () => {
                         {parseInt(row[2], 10)<25? 
                             <Typography sx={{color: "lightgreen"}}>{row.temperature}</Typography> 
                         : 
-                            <Typography sx={{color: "orange"}}>{row.role}</Typography>}
+                            <Typography sx={{color: "orange"}}>{convertSupplyChainStatus(row.role)}</Typography>}
                         </TimelineContent>
                         
                     </TimelineItem> 

@@ -1104,7 +1104,7 @@ const ABI = JSON.parse(`[
 		"type": "function"
 	}
 ]`);
-const CONTRACT_ADDRESS = "0xabDf73B90E87Fd0071C714567214e9c64F504B88"; //step 3
+const CONTRACT_ADDRESS = "0x70754B825f031f1aCF2666adE3A902546596042c"; //step 3
 const myContract = new web3.eth.Contract(ABI, CONTRACT_ADDRESS);
 const ADD = "0x24A3bA51771514351fdc67cE80d00cf45CD95751";
 let options = {
