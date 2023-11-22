@@ -208,9 +208,9 @@ cd .. // Goes back to client folder
 npm start
 Check http://localhost:3000/ to run the application. Go to the status tab and search for 0x5963339cB935082c3f63f25ecF487A90605eA8bc(raw material) and 0xBBe540a810D581c09c4458EE40D7790e18F6BF3F(medicine). You should see the below pages :
 
-![medicine](https://github.com/biswass/pharmacySupplyChain/assets/12818799/4ba82a69-0e40-4ffb-9ff9-4874370b20e3)
+![alt text](https://github.com/biswass/pharmacySupplyChain/blob/sanshrav1311-patch-2/assets/flow/medicine.png)
 
-![status](https://github.com/biswass/pharmacySupplyChain/assets/12818799/9e3cbe35-1236-4624-ad3d-f6b3e1bb7b8a)
+![alt text](https://github.com/biswass/pharmacySupplyChain/blob/sanshrav1311-patch-2/assets/flow/status.png)
 
 
  ```
