@@ -5,9 +5,11 @@
 //step 4: change variable ADD to input address of package
 //step 5: run code
 //import Web3 from "web3";
-const { Web3 } = require('web3');
+const { Web3 } = require("web3");
 //const Web3 = require("web3");
-const web3 = new Web3("https://sepolia.infura.io/v3/02b787ae4676470baac9ea2288b785d5"); //step 2
+const web3 = new Web3(
+  "https://sepolia.infura.io/v3/02b787ae4676470baac9ea2288b785d5"
+); //step 2
 const ABI = JSON.parse(`[
 	{
 		"inputs": [],
@@ -132,6 +134,12 @@ const ABI = JSON.parse(`[
 				"indexed": false,
 				"internalType": "enum MyLibrary.madicineStatus",
 				"name": "status",
+				"type": "uint8"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint8",
+				"name": "packageStatus",
 				"type": "uint8"
 			}
 		],
@@ -1098,7 +1106,7 @@ const ABI = JSON.parse(`[
 ]`);
 const CONTRACT_ADDRESS = "0xabDf73B90E87Fd0071C714567214e9c64F504B88"; //step 3
 const myContract = new web3.eth.Contract(ABI, CONTRACT_ADDRESS);
-const ADD = "0x24A3bA51771514351fdc67cE80d00cf45CD95751"
+const ADD = "0x24A3bA51771514351fdc67cE80d00cf45CD95751";
 let options = {
   filter: {},
   fromBlock: 4732900,
@@ -1116,17 +1124,20 @@ function getInfo(ADD) {
 }
 getInfo(ADD);
 
- const getInfo1 = (ADD) => {
-	return myContract
+const getInfo1 = (ADD) => {
+  return myContract
     .getPastEvents("ShippmentUpdate", options)
     .then((results) => {
-	  const resultList = [];
+      const resultList = [];
       for (let i = 0; i < results.length; i++) {
-        if (results[i].returnValues["0"] == ADD) {resultList.push(results[i]);console.log(results[i]);}
+        if (results[i].returnValues["0"] == ADD) {
+          resultList.push(results[i]);
+          console.log(results[i]);
+        }
       }
-	  return resultList;
+      return resultList;
     })
     .catch();
-  };
+};
 
-  module.exports = {getInfo1}
+module.exports = { getInfo1 };
