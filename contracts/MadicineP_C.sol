@@ -40,13 +40,13 @@ contract MadicineP_C {
         shipper = Shipper;
         receiver = Receiver;
         status = packageStatus(0);
-        emit MyLibrary.ShippmentUpdate(
-            BatchID,
-            shipper,
-            receiver,
-            1,
-            MyLibrary.madicineStatus(0)
-        );
+        // emit MyLibrary.ShippmentUpdate(
+        //     BatchID,
+        //     shipper,
+        //     receiver,
+        //     1,
+        //     MyLibrary.madicineStatus(0)
+        // );
     }
 
     /// @notice
