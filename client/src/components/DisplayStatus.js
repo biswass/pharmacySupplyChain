@@ -110,17 +110,14 @@ const DisplayStatus = () => {
         }
     }
 
-    /*function convertTimestamp(t) {
-        var intTimestamp = parseInt(t, 16);
-        // console.log(intTimestamp)
-        var s = new Date(intTimestamp*1000);
-        return String(s).substring(0, 24);
-    }*/
-
     function convertTimestamp(timestamp) {
-        const date = new Date(timestamp * 1000); // Convert seconds to milliseconds
+        console.log('L121 ', typeof timestamp)
+        const num = Number(timestamp)*1000;
+        console.log('L123 ',num);
+        const date1 = new Date(num);
+        //const date = new Date(Number(timestamp.toString()) * 1000n); // Convert BigInt to string, then to Number, and multiply by 1000n for milliseconds
         const options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', timeZoneName: 'short' };
-        return new Intl.DateTimeFormat('en-US', options).format(date);
+        return new Intl.DateTimeFormat('en-US', options).format(date1);
     }
 
     return (
