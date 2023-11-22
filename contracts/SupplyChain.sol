@@ -422,7 +422,7 @@ contract SupplyChain {
             Rcvr,
             block.timestamp,
             MyLibrary.madicineStatus(0),
-            6
+            14
         );
     }
 
