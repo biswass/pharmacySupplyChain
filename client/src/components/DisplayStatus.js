@@ -28,7 +28,7 @@ import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import StatusModal from './StatusModal.js';
 
 const DisplayStatus = () => {
-    const ContractAddress = "0x70754B825f031f1aCF2666adE3A902546596042c" //"0xFa56954976bA7d616945c09A7e360499e7038d98";
+    const ContractAddress = "0x262e4BBd3dCBb26d41e82F5ebb8B261A82B40151" //"0xFa56954976bA7d616945c09A7e360499e7038d98";
     const searchResults = "";
     const { getInfo1 } = require('./events.js');
     const initialData = [
