@@ -3,6 +3,10 @@ This project showcases the journey of Medicine on blockchain.
 
 The Pharmacy supply chain comprises the processes to bring healthcare products from supplier to the customer
 
+To be extended further to customize the mining process, reward mechanism and concensus algorithm
+
+Currently deployed at https://sepolia.etherscan.io/address/0x70754B825f031f1aCF2666adE3A902546596042c
+
 #### Problems in Existing System
 ---
 - Considerable paperwork
@@ -202,5 +206,11 @@ npm install
 cd components -> Go to DisplayProduct.js and DisplayStatus.js -> update const ContractAddress = <deployedSmartContractAddress>
 cd .. // Goes back to client folder
 npm start
-Check http://localhost:3000/ to run the application
+Check http://localhost:3000/ to run the application. Go to the status tab and search for 0x5963339cB935082c3f63f25ecF487A90605eA8bc(raw material) and 0xBBe540a810D581c09c4458EE40D7790e18F6BF3F(medicine). You should see the below pages :
+
+![alt text](https://github.com/biswass/pharmacySupplyChain/blob/sanshrav1311-patch-2/assets/flow/medicine.png)
+
+![alt text](https://github.com/biswass/pharmacySupplyChain/blob/sanshrav1311-patch-2/assets/flow/status.png)
+
+
  ```

@@ -13,6 +13,8 @@ import SearchIcon from '@mui/icons-material/Search';
 // import TextField from '@mui/material/TextField';
 // import Button from '@mui/material/Button';
 // import SendIcon from '@mui/icons-material/Send';
+//import Events1 from './events.js';
+import getInfo from './events.js';
 
 import Timeline from '@mui/lab/Timeline';
 import TimelineItem from '@mui/lab/TimelineItem';
@@ -26,11 +28,11 @@ import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import StatusModal from './StatusModal.js';
 
 const DisplayStatus = () => {
-    const ContractAddress = "0xE4b876ed393E19FbD18eC99118647BcbFE5300F3" //"0xFa56954976bA7d616945c09A7e360499e7038d98";
-
-    
+    const ContractAddress = "0x70754B825f031f1aCF2666adE3A902546596042c" //"0xFa56954976bA7d616945c09A7e360499e7038d98";
+    const searchResults = "";
+    const { getInfo1 } = require('./events.js');
     const initialData = [
-        { role: 'Supplier', date: 'Nov 1 2023', timestamp: '0x61A80C0B' },
+        /*{ role: 'Supplier', date: 'Nov 1 2023', timestamp: '0x61A80C0B' }/*,
         { role: 'Transporter', date: 'Nov 2 2023', timestamp: '0x61A80C0B' },
         { role: 'Manufacturer', date: 'Nov 3 2023', timestamp: '0x61A80C0B' },
         { role: 'Transporter', date: 'Nov 4 2023', timestamp: '0x61A80C0B'},
@@ -38,7 +40,7 @@ const DisplayStatus = () => {
         { role: 'Transporter', date: 'Nov 6 2023', timestamp: '0x61A80C0B' },
         { role: 'Distributor', date: 'Nov 7 2023', timestamp: '0x61A80C0B' },
         { role: 'Transporter', date: 'Nov 8 2023', timestamp: '0x61A80C0B' },
-        { role: 'Pharma', date: '0x61A80C0B', timestamp: '0x61A80C0B' }
+        { role: 'Pharma', date: '0x61A80C0B', timestamp: '0x61A80C0B' }*/
     ];
     //const [data, setData] = useState();
     const [id, setId] = useState(1);
@@ -48,26 +50,59 @@ const DisplayStatus = () => {
         await window.ethereum.request({ method: "eth_requestAccounts" });
     }
     console.log(id);
-    async function getStatus() {
+
+    // Function to handle the status retrieval based on the entered product ID
+    async function handleStatusRetrieval() {
+        // Pass the entered product ID to the getStatus function
+        await getStatus(id); // 'id' is the value from the input field
+        console.log("searchResults: ", searchResults);
+    }
+
+    async function getStatus(itemAddress) {
         
         if (typeof window.ethereum !== "undefined") {
             requestAccount();
             const provider = new ethers.providers.Web3Provider(window.ethereum);
             const signer = provider.getSigner();
-            console.log(await signer.getAddress())
+            //console.log(await signer.getAddress())
 
             const contract = new ethers.Contract(
                 ContractAddress,
                 SupplyChain.abi,
                 provider
             );
+
             try {
 
-                const Sdata = await contract.getUserInfo('0x262e4BBd3dCBb26d41e82F5ebb8B261A82B40151');
-                
-                console.log("data1: ", Sdata);
-                setData(Sdata);
+                //const Sdata = await contract.getUserInfo('0x262e4BBd3dCBb26d41e82F5ebb8B261A82B40151');
+                //const Sdata = await DisplayEvent.we
+                //console.log("data1: ", Sdata);
+                //setData(Sdata);
                 //console.log(contract);
+                //const ADD = "0x24A3bA51771514351fdc67cE80d00cf45CD95751"
+                const searchResults = await getInfo1(itemAddress);
+                console.log("searchResults sender address: ", searchResults[0].returnValues[1]);
+                console.log("searchResults timestamp: ", searchResults[0].returnValues[3]);
+                /*setTimeout(() => {
+                    console.log("searchResults1: ", searchResults);
+                }, 3000);*/
+                
+                //console.log("addr: ", itemAddress);
+
+                const updatedData = searchResults.map(result => ({
+                    role: result.returnValues[5],
+                    date: 'Nov 1 2023', // You might want to update this based on your logic
+                    timestamp: result.returnValues[3]
+                }));
+
+  /*              const updatedData = [
+                    { role: searchResults[0].returnValues[1], date: 'Nov 1 2023', timestamp: searchResults[0].returnValues[3] },
+  
+                ];*/
+                setData(updatedData);
+                //const [data, setData] = useState();
+                //const [id, setId] = useState(1);
+                //const [data,setData] = useState(updatedData);
 
             } catch (err) {
                 console.log("Error: ", err);
@@ -75,11 +110,38 @@ const DisplayStatus = () => {
         }
     }
 
-    function convertTimestamp(t) {
-        var intTimestamp = parseInt(t, 16);
-        // console.log(intTimestamp)
-        var s = new Date(intTimestamp*1000);
-        return String(s).substring(0, 24);
+    function convertTimestamp(timestamp) {
+        console.log('L121 ', typeof timestamp)
+        const num = Number(timestamp)*1000;
+        console.log('L123 ',num);
+        const date1 = new Date(num);
+        //const date = new Date(Number(timestamp.toString()) * 1000n); // Convert BigInt to string, then to Number, and multiply by 1000n for milliseconds
+        const options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', timeZoneName: 'short' };
+        return new Intl.DateTimeFormat('en-US', options).format(date1);
+    }
+
+    function convertSupplyChainStatus(statusCode) {
+        statusCode = Number(statusCode);
+        console.log('L125 statusCode : ',statusCode)
+        const statusMap = {
+            0: 'Supplier Created',
+            1: 'In Transit: Supplier to Manufacturer',
+            2: 'In Transit: Manufacturer to Wholesaler or Distributor',
+            3: 'In Transit: Wholesaler to Distributor',
+            4: 'In Transit: Distributor to Pharma',
+            5: 'In Transit: Pharma to Customer',
+            6: 'Received: Manufacturer Medicine',
+            7: 'Received by Wholesaler',
+            8: 'Received by Distributor',
+            9: 'Pickup Scheduled: Wholesaler to Distributor',
+            10: 'Pickup Scheduled: Distributor to Pharma',
+            11: 'Received at Pharma',
+            12: 'Pickup Scheduled: Pharma to Customer',
+            13: 'Received by Customer',
+            14: 'Manufactured Medicine'
+        };
+        console.log('L143 statusMap : ',statusMap[statusCode] || 'Unknown Status')
+        return statusMap[statusCode] || 'Unknown Status';
     }
 
     return (
@@ -98,7 +160,7 @@ const DisplayStatus = () => {
                     placeholder="Enter Product ID"
                     onChange= {(e) => setId(e.target.value)}
                 />
-                <IconButton sx={{ p: '10px' }} aria-label="search" onClick={getStatus}>
+                <IconButton sx={{ p: '10px' }} aria-label="search" onClick={handleStatusRetrieval}>
                     <SearchIcon />
                 </IconButton>
                 </Paper>
@@ -130,7 +192,7 @@ const DisplayStatus = () => {
                         {parseInt(row[2], 10)<25? 
                             <Typography sx={{color: "lightgreen"}}>{row.temperature}</Typography> 
                         : 
-                            <Typography sx={{color: "orange"}}>{row.role}</Typography>}
+                            <Typography sx={{color: "orange"}}>{convertSupplyChainStatus(row.role)}</Typography>}
                         </TimelineContent>
                         
                     </TimelineItem> 

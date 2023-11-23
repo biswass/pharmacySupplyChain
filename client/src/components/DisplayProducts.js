@@ -65,7 +65,7 @@ const DisplayProducts = () => {
 
     //const [ProductsList, setData] = useState();
     //const ContractAddress = "0xE4b876ed393E19FbD18eC99118647BcbFE5300F3" //"0xFa56954976bA7d616945c09A7e360499e7038d98";
-    const ContractAddress = "0x7808777C0505ba26460fD7Ce5A25F373Fb5dBA0e";
+    const ContractAddress = "0x70754B825f031f1aCF2666adE3A902546596042c";
     
     async function requestAccount() {
         await window.ethereum.request({ method: "eth_requestAccounts" });
